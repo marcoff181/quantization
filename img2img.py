@@ -72,14 +72,14 @@ class ImageGenerator:
         q_config = QUANTIZATION_LEVELS[self.quantization]
         
         # Determine Dtype
-        torch_dtype = None
+        dtype = None
         if self.quantization == 'fp16':
             if self.device == 'cpu':
-                torch_dtype = torch.float32 
+                dtype = torch.float32 
             else:
-                torch_dtype = torch.float16
+                dtype = torch.float16
         else:
-            torch_dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+            dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
         
         try:
             pipeline_t2i = None
@@ -88,11 +88,11 @@ class ImageGenerator:
             if 'sd3' in self.model_key:
                  if self.quantization == 'fp16':
                     pipeline_t2i = StableDiffusion3Pipeline.from_pretrained(
-                        model_id, torch_dtype=torch.float16
+                        model_id, dtype=torch.float16
                     )
                  else:
                     pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
-                        model_id, quantization_config=q_config, torch_dtype=torch_dtype
+                        model_id, quantization_config=q_config, dtype=dtype
                     )
                  # SD3 usually requires CPU offload to fit in consumer VRAM
                  pipeline_t2i.enable_model_cpu_offload()
@@ -102,14 +102,14 @@ class ImageGenerator:
                 if self.quantization == 'fp16':
                     pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
                         model_id, 
-                        torch_dtype=torch_dtype, 
+                        dtype=dtype, 
                         use_safetensors=True
                     ).to(self.device)
                 else:
                     pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
                         model_id, 
                         quantization_config=q_config, 
-                        torch_dtype=torch_dtype,
+                        dtype=dtype,
                         use_safetensors=True
                     ).to(self.device)
                     pipeline_t2i.enable_model_cpu_offload()

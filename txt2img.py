@@ -79,14 +79,14 @@ class ImageGenerator:
         q_config = QUANTIZATION_LEVELS[self.quantization]
         
         # Determine Dtype
-        torch_dtype = None
+        dtype = None
         if self.quantization == 'fp16':
             if self.device == 'cpu':
-                torch_dtype = torch.float32 
+                dtype = torch.float32 
             else:
-                torch_dtype = torch.float16
+                dtype = torch.float16
         else:
-            torch_dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+            dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
         
         # Determine Variant (mostly for SDXL/SD1.5 legacies)
         variant = "fp16" if self.quantization == 'fp16' and self.model_key not in ['flux', 'sd3', 'sd35'] and self.device != 'cpu' else None
@@ -96,12 +96,12 @@ class ImageGenerator:
                 if self.quantization == 'fp16':
                      # Flux FP16 requires offload to fit in <32GB VRAM
                      self.pipeline = FluxPipeline.from_pretrained(
-                         model_id, torch_dtype=torch.bfloat16
+                         model_id, dtype=torch.bfloat16
                      )
                      self.pipeline.enable_model_cpu_offload()
                 else:
                      self.pipeline = FluxPipeline.from_pretrained(
-                         model_id, quantization_config=q_config, torch_dtype=torch_dtype
+                         model_id, quantization_config=q_config, dtype=dtype
                      )
                      self.pipeline.enable_model_cpu_offload()
                 
@@ -109,7 +109,7 @@ class ImageGenerator:
             elif self.model_key in ['sd35', 'sd3']:
                  if self.quantization == 'fp16':
                     self.pipeline_t2i = StableDiffusion3Pipeline.from_pretrained(
-                        model_id, torch_dtype=torch.float16
+                        model_id, dtype=torch.float16
                     )
                     self.pipeline_t2i.enable_model_cpu_offload()
                  else:
@@ -118,7 +118,7 @@ class ImageGenerator:
                     model_id_load = "stabilityai/stable-diffusion-3.5-large" if (self.model_key == 'sd35' and self.quantization != 'fp16') else model_id
                     
                     self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
-                        model_id_load, quantization_config=q_config, torch_dtype=torch.float16
+                        model_id_load, quantization_config=q_config, dtype=torch.float16
                     )
                     self.pipeline_t2i.enable_model_cpu_offload()
             
@@ -127,11 +127,11 @@ class ImageGenerator:
             else: # SDXL
                 if self.quantization == 'fp16':
                     self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
-                        model_id, torch_dtype=torch_dtype, variant=variant, use_safetensors=True
+                        model_id, dtype=dtype, variant=variant, use_safetensors=True
                     ).to(self.device)
                 else:
                     self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
-                        model_id, quantization_config=q_config, torch_dtype=torch_dtype
+                        model_id, quantization_config=q_config, dtype=dtype
                     ).to(self.device)
                 self.pipeline_t2i.enable_model_cpu_offload()
 
