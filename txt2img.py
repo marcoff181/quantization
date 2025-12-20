@@ -179,6 +179,7 @@ def main():
     parser = argparse.ArgumentParser(description="Generate images using various Stable Diffusion models.")
     parser.add_argument("--models", nargs='+', default=MODELS.keys(), choices=MODELS.keys(), help="Models to use. Default is all available models")
     parser.add_argument("--prompt", type=str, default="", help="Prompt for generation.")
+    parser.add_argument("--prompts_number", type=int, default=100, help="If --prompt is not provided, how many prompts to load automatically")
     parser.add_argument("--quantization", nargs='+', default=QUANTIZATION_LEVELS.keys(), choices=QUANTIZATION_LEVELS.keys(), help="Quantization levels.")
     parser.add_argument("--output_dir", type=str, default="Face2Fake_pt2/output", help="Directory for output images.")
     parser.add_argument("--strength", type=float, default=0.3, help="Strength for img2img.")
@@ -196,24 +197,33 @@ def main():
             try:
                 generator = ImageGenerator(model_key, quant, device=args.device)
                 
-
                 print(f"Generating txt2img with {model_key} ({quant})...")
-                
-                i = 0 
-                current_seed = args.seed + i if args.seed is not None else None
-                
-                img = generator.generate(
-                    args.prompt, 
-                    steps=args.steps, 
-                    guidance_scale=args.guidance, 
-                    seed=current_seed
-                )
-                
-                seed_str = f"_seed{current_seed}" if current_seed is not None else ""
-                out_name = f"{args.output_dir}/{model_key}_{quant}_{i}{seed_str}.png"
-                img.save(out_name)
-                print(f"Saved {out_name}")
-                
+
+                if args.prompt == "":
+                    with open('prompts_general.txt', 'r') as file:
+                        prompts = [file.readline().strip() for _ in range(args.prompts_number)]
+                else:
+                    prompts = [args.prompt]
+
+                # if somebody can explain it I will put it back
+                # i = 0 
+                # current_seed = args.seed + i if args.seed is not None else None
+
+                    
+                print(f"Generating {args.prompts_number} images using {model_key} ({quant})...")
+                for i,prompt in enumerate(prompts):
+                    img = generator.generate(
+                        prompt, 
+                        steps=args.steps, 
+                        guidance_scale=args.guidance, 
+                        seed=args.seed
+                    )
+                    
+                    out_name = f"{args.output_dir}/{model_key}_{quant}_prompt{i}_seed{args.seed}.png"
+                    img.save(out_name)
+
+                    print(f"\r    Saved image {out_name} #{i}/{args.prompts_number}", end='', flush=True)
+
                 flush()
                             
                 del generator
