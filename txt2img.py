@@ -177,11 +177,9 @@ class ImageGenerator:
 
 def main():
     parser = argparse.ArgumentParser(description="Generate images using various Stable Diffusion models.")
-    parser.add_argument("--mode", type=str, choices=['img2img', 'txt2img'], required=True, help="Generation mode.")
+    parser.add_argument("--models", nargs='+', default=MODELS.keys(), choices=MODELS.keys(), help="Models to use. Default is all available models")
     parser.add_argument("--prompt", type=str, default="", help="Prompt for generation.")
-    parser.add_argument("--models", nargs='+', default=['sdxl'], choices=MODELS.keys(), help="Models to use.")
-    parser.add_argument("--quantization", nargs='+', default=['fp16'], choices=QUANTIZATION_LEVELS.keys(), help="Quantization levels.")
-    parser.add_argument("--input_dir", type=str, default="Face2Fake_pt2/to_crop_and_to_gen", help="Directory for input images (img2img).")
+    parser.add_argument("--quantization", nargs='+', default=QUANTIZATION_LEVELS.keys(), choices=QUANTIZATION_LEVELS.keys(), help="Quantization levels.")
     parser.add_argument("--output_dir", type=str, default="Face2Fake_pt2/output", help="Directory for output images.")
     parser.add_argument("--strength", type=float, default=0.3, help="Strength for img2img.")
     parser.add_argument("--steps", type=int, default=60, help="Inference steps.")
@@ -192,13 +190,6 @@ def main():
     args = parser.parse_args()
     
     os.makedirs(args.output_dir, exist_ok=True)
-    
-    input_images = []
-    if args.mode == 'img2img':
-        input_images = sorted(glob.glob(os.path.join(args.input_dir, '*.jpg')) + glob.glob(os.path.join(args.input_dir, '*.png')))
-        if not input_images:
-            print(f"No images found in {args.input_dir}")
-            return
 
     for model_key in args.models:
         for quant in args.quantization:
