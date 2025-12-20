@@ -96,12 +96,12 @@ class ImageGenerator:
                 if self.quantization == 'fp16':
                      # Flux FP16 requires offload to fit in <32GB VRAM
                      self.pipeline = FluxPipeline.from_pretrained(
-                         model_id, dtype=torch.bfloat16
+                         model_id, torch_dtype=torch.bfloat16
                      )
                      self.pipeline.enable_model_cpu_offload()
                 else:
                      self.pipeline = FluxPipeline.from_pretrained(
-                         model_id, quantization_config=q_config, dtype=dtype
+                         model_id, quantization_config=q_config, torch_dtype=dtype
                      )
                      self.pipeline.enable_model_cpu_offload()
                 
@@ -109,7 +109,7 @@ class ImageGenerator:
             elif self.model_key in ['sd35', 'sd3']:
                  if self.quantization == 'fp16':
                     self.pipeline_t2i = StableDiffusion3Pipeline.from_pretrained(
-                        model_id, dtype=torch.float16
+                        model_id, torch_dtype=torch.float16
                     )
                     self.pipeline_t2i.enable_model_cpu_offload()
                  else:
@@ -118,7 +118,7 @@ class ImageGenerator:
                     model_id_load = "stabilityai/stable-diffusion-3.5-large" if (self.model_key == 'sd35' and self.quantization != 'fp16') else model_id
                     
                     self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
-                        model_id_load, quantization_config=q_config, dtype=torch.float16
+                        model_id_load, quantization_config=q_config, torch_dtype=torch.float16
                     )
                     self.pipeline_t2i.enable_model_cpu_offload()
             
@@ -127,11 +127,11 @@ class ImageGenerator:
             else: # SDXL
                 if self.quantization == 'fp16':
                     self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
-                        model_id, dtype=dtype, variant=variant, use_safetensors=True
+                        model_id, torch_dtype=dtype, variant=variant, use_safetensors=True
                     ).to(self.device)
                 else:
                     self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
-                        model_id, quantization_config=q_config, dtype=dtype
+                        model_id, quantization_config=q_config, torch_dtype=dtype
                     ).to(self.device)
                 self.pipeline_t2i.enable_model_cpu_offload()
 

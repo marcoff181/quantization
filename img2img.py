@@ -88,11 +88,11 @@ class ImageGenerator:
             if 'sd3' in self.model_key:
                  if self.quantization == 'fp16':
                     pipeline_t2i = StableDiffusion3Pipeline.from_pretrained(
-                        model_id, dtype=torch.float16
+                        model_id, torch_dtype=torch.float16
                     )
                  else:
                     pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
-                        model_id, quantization_config=q_config, dtype=dtype
+                        model_id, quantization_config=q_config, torch_dtype=dtype
                     )
                  # SD3 usually requires CPU offload to fit in consumer VRAM
                  pipeline_t2i.enable_model_cpu_offload()
@@ -102,14 +102,14 @@ class ImageGenerator:
                 if self.quantization == 'fp16':
                     pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
                         model_id, 
-                        dtype=dtype, 
+                        torch_dtype=dtype, 
                         use_safetensors=True
                     ).to(self.device)
                 else:
                     pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
                         model_id, 
                         quantization_config=q_config, 
-                        dtype=dtype,
+                        torch_dtype=dtype,
                         use_safetensors=True
                     ).to(self.device)
                     pipeline_t2i.enable_model_cpu_offload()
