@@ -179,7 +179,7 @@ def main():
     parser = argparse.ArgumentParser(description="Generate images using various Stable Diffusion models.")
     parser.add_argument("--models", nargs='+', default=MODELS.keys(), choices=MODELS.keys(), help="Models to use. Default is all available models")
     parser.add_argument("--prompt", type=str, default="", help="Prompt for generation.")
-    parser.add_argument("--prompts_number", type=int, default=100, help="If --prompt is not provided, how many prompts to load automatically")
+    parser.add_argument("--prompts", type=int, default=100, help="If --prompt is not provided, how many prompts to load automatically")
     parser.add_argument("--quantization", nargs='+', default=QUANTIZATION_LEVELS.keys(), choices=QUANTIZATION_LEVELS.keys(), help="Quantization levels.")
     parser.add_argument("--output_dir", type=str, default="Face2Fake_pt2/output", help="Directory for output images.")
     parser.add_argument("--strength", type=float, default=0.3, help="Strength for img2img.")
@@ -201,16 +201,15 @@ def main():
 
                 if args.prompt == "":
                     with open('prompts_general.txt', 'r') as file:
-                        prompts = [file.readline().strip() for _ in range(args.prompts_number)]
+                        prompts = [file.readline().strip() for _ in range(args.prompts)]
                 else:
                     prompts = [args.prompt]
 
                 # if somebody can explain it I will put it back
                 # i = 0 
                 # current_seed = args.seed + i if args.seed is not None else None
-
                     
-                print(f"Generating {args.prompts_number} images using {model_key} ({quant})...")
+                print(f"Generating {args.prompts} images using {model_key} ({quant})...")
                 for i,prompt in enumerate(prompts):
                     img = generator.generate(
                         prompt, 
@@ -219,12 +218,11 @@ def main():
                         seed=args.seed
                     )
                     
-                    out_name = f"{args.output_dir}/{model_key}_{quant}_prompt{i}_seed{args.seed}.png"
+                    out_name = f"{args.output_dir}/{model_key}_{quant}_p{i}_seed{args.seed}.png"
                     img.save(out_name)
 
-                    print(f"\r    Saved image {out_name} #{i}/{args.prompts_number}", end='', flush=True)
+                    print(f"Saved image {out_name} #{i}/{args.prompts}")
 
-                flush()
                             
                 del generator
                 torch.cuda.empty_cache()
