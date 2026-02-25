@@ -1,17 +1,8 @@
 import argparse
-import csv
 import os
 import random
-import time
 import torch
 import gc
-
-try:
-    import psutil
-    HAS_PSUTIL = True
-except ImportError:
-    HAS_PSUTIL = False
-    print("Warning: psutil not installed. RAM monitoring disabled. Install with: pip install psutil")
 
 from diffusers import (
     AutoPipelineForImage2Image,
@@ -20,6 +11,7 @@ from diffusers import (
 )
 
 from diffusers.quantizers import PipelineQuantizationConfig
+from resource_monitor import ResourceMonitor
 
 # --- Configuration & Constants ---
 MODELS = {
@@ -76,109 +68,6 @@ def flush():
         torch.mps.empty_cache()
 
 
-class ResourceMonitor:
-    """Monitors GPU VRAM, system RAM, and timing during pipeline operations."""
-
-    def __init__(self, device="cuda"):
-        self.device = device
-        self.records = []  # list of dicts for CSV export
-        self._use_cuda = device == "cuda" and torch.cuda.is_available()
-
-    # ---- snapshot helpers ----
-    def _gpu_mem_mb(self):
-        if not self._use_cuda:
-            return 0.0, 0.0, 0.0
-        allocated = torch.cuda.memory_allocated() / 1024**2
-        reserved = torch.cuda.memory_reserved() / 1024**2
-        peak = torch.cuda.max_memory_allocated() / 1024**2
-        return allocated, reserved, peak
-
-    def _ram_mb(self):
-        if not HAS_PSUTIL:
-            return 0.0, 0.0
-        proc = psutil.Process(os.getpid())
-        rss = proc.memory_info().rss / 1024**2
-        sys_used = psutil.virtual_memory().used / 1024**2
-        return rss, sys_used
-
-    def _gpu_total_mb(self):
-        if not self._use_cuda:
-            return 0.0
-        return torch.cuda.get_device_properties(0).total_memory / 1024**2
-
-    # ---- context-manager style helpers ----
-    def reset_peak(self):
-        if self._use_cuda:
-            torch.cuda.reset_peak_memory_stats()
-
-    def start_timer(self):
-        self._t0 = time.perf_counter()
-        self.reset_peak()
-        self._start_alloc, _, _ = self._gpu_mem_mb()
-        self._start_rss, _ = self._ram_mb()
-
-    def stop_timer(self):
-        elapsed = time.perf_counter() - self._t0
-        alloc, reserved, peak = self._gpu_mem_mb()
-        rss, sys_used = self._ram_mb()
-        return {
-            "elapsed_s": round(elapsed, 2),
-            "vram_allocated_mb": round(alloc, 1),
-            "vram_reserved_mb": round(reserved, 1),
-            "vram_peak_mb": round(peak, 1),
-            "vram_total_mb": round(self._gpu_total_mb(), 1),
-            "ram_process_mb": round(rss, 1),
-            "ram_system_used_mb": round(sys_used, 1),
-            "ram_delta_mb": round(rss - self._start_rss, 1),
-        }
-
-    # ---- high-level API ----
-    def record(self, model_key, quantization, phase, extra=None):
-        """Stop timer and store a record with metadata."""
-        metrics = self.stop_timer()
-        metrics.update({"model": model_key, "quantization": quantization, "phase": phase})
-        if extra:
-            metrics.update(extra)
-        self.records.append(metrics)
-        self._print_record(metrics)
-        return metrics
-
-    def _print_record(self, m):
-        print(f"  [{m['phase']}] {m['model']}@{m['quantization']}  "
-              f"time={m['elapsed_s']}s  "
-              f"VRAM peak={m['vram_peak_mb']}MB / {m['vram_total_mb']}MB  "
-              f"RAM={m['ram_process_mb']}MB")
-
-    def save_csv(self, path):
-        """Write all collected records to a CSV file."""
-        if not self.records:
-            return
-        fieldnames = list(self.records[0].keys())
-        # ensure all keys are captured
-        for r in self.records:
-            for k in r:
-                if k not in fieldnames:
-                    fieldnames.append(k)
-        with open(path, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(self.records)
-        print(f"\nResource metrics saved to {path}")
-
-    def summary(self):
-        """Print a summary table of all records."""
-        if not self.records:
-            return
-        print("\n" + "=" * 90)
-        print(f"{'Model':<10} {'Quant':<6} {'Phase':<12} {'Time(s)':<9} "
-              f"{'VRAM Peak(MB)':<15} {'RAM(MB)':<10}")
-        print("-" * 90)
-        for m in self.records:
-            print(f"{m['model']:<10} {m['quantization']:<6} {m['phase']:<12} "
-                  f"{m['elapsed_s']:<9} {m['vram_peak_mb']:<15} {m['ram_process_mb']:<10}")
-        print("=" * 90)
-
-
 class ImageGenerator:
     def __init__(self, model_key, quantization, device=None, monitor=None):
         self.model_key = model_key
@@ -199,12 +88,17 @@ class ImageGenerator:
 
         self.pipeline_i2i = None
         self.pipeline_t2i = None
+        self.model_size_mb = 0.0
 
         if self.monitor:
             self.monitor.start_timer()
+            
         self.load_pipeline()
         if self.monitor:
-            self.monitor.record(self.model_key, self.quantization, "load_model")
+            self.monitor.record(
+                self.model_key, self.quantization, "load_model",
+                extra={"model_size_mb": self.model_size_mb}
+            )
 
     def _get_dtype(self):
         # CPU
@@ -239,8 +133,8 @@ class ImageGenerator:
             # Case 2: SD3 and SD3.5
             elif self.model_key in ["sd35", "sd3"]:
                 target_model = model_id
-                if self.model_key == "sd35" and self.quantization != "fp16":
-                    target_model = "stabilityai/stable-diffusion-3.5-large"
+                # if self.model_key == "sd35" and self.quantization != "fp16":
+                #     target_model = "stabilityai/stable-diffusion-3.5-large"
 
                 self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
                     target_model,
@@ -258,13 +152,35 @@ class ImageGenerator:
 
                 self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
                     model_id,
-                    dtype=dtype,
+                    torch_dtype=dtype,
                     variant=variant,
                     use_safetensors=True,
-                )  # .to(self.device) # if the model is really big, the vram is saturated before offload can kick in
+                )  
+                
+            # Compute actual model parameter sizes BEFORE offload
+            self.model_size_mb = self._compute_model_size(self.pipeline_t2i)
+            print(f"  Model parameter size: {self.model_size_mb:.1f} MB")
 
-            # offload for all the models
-            self.pipeline_t2i.enable_model_cpu_offload()
+            # offload strategy: bnb 8bit modules cannot be moved to CPU
+            if self.quantization == "fp8":
+                # For 8bit quantized models, keep on device (no offload possible)
+                try:
+                    self.pipeline_t2i.to(self.device)
+                    print(f"  Moved fp8 pipeline to {self.device}")
+                except Exception:
+                    print(f"  Warning: could not move fp8 pipeline to {self.device}, already on device")
+            else:
+                try:
+                    self.pipeline_t2i.enable_model_cpu_offload()
+                    print(f"  Enabled CPU offload for {self.model_key}")
+                except Exception:
+                    print("  Warning: cpu offload failed, trying sequential offload...")
+                    try:
+                        self.pipeline_t2i.enable_sequential_cpu_offload()
+                        print(f"  Enabled sequential CPU offload for {self.model_key}")
+                    except Exception as e2:
+                        print(f"  Warning: sequential offload also failed: {e2}")
+                        self.pipeline_t2i.to(self.device)
 
             # Convert to Image2Image pipeline
             self.pipeline_i2i = AutoPipelineForImage2Image.from_pipe(self.pipeline_t2i)
@@ -272,6 +188,25 @@ class ImageGenerator:
         except Exception as e:
             print(f"Error loading pipeline: {e}")
             raise e
+
+    @staticmethod
+    def _compute_model_size(pipeline):
+        """Compute total size (MB) of all model parameters in the pipeline,
+        accounting for quantized storage (e.g. int8, uint8 for bnb)."""
+        total_bytes = 0
+        seen = set()
+        for name, component in pipeline.components.items():
+            if not hasattr(component, 'parameters'):
+                continue
+            for p in component.parameters():
+                p_id = p.data_ptr()
+                if p_id in seen:
+                    continue
+                seen.add(p_id)
+                # element_size() returns actual storage bytes per element
+                # (1 for int8/uint8 from bitsandbytes, 2 for fp16, 4 for fp32)
+                total_bytes += p.nelement() * p.element_size()
+        return total_bytes / 1024**2
 
     def generate(
         self, prompt, image=None, strength=0.3, guidance_scale=3.5, steps=30, seed=None
@@ -304,7 +239,7 @@ class ImageGenerator:
             if self.monitor:
                 self.monitor.record(
                     self.model_key, self.quantization, "generate",
-                    extra={"seed": seed, "steps": steps}
+                    extra={"seed": seed, "steps": steps, "model_size_mb": self.model_size_mb}
                 )
             return result
         except Exception as e:
@@ -317,7 +252,7 @@ def main():
     parser.add_argument("--prompt", type=str, default="",help="Prompt for generation.")
     parser.add_argument("--prompts",type=int,default=100,help="If --prompt is not provided, how many prompts to load automatically")
     parser.add_argument("--quantization",nargs="+",default=quantization_levels("sd35").keys(),choices=quantization_levels("sd35").keys(),help="Quantization levels.")
-    parser.add_argument("--output_dir",type=str,default="Face2Fake_pt2/output",help="Directory for output images.")
+    parser.add_argument("--output_dir",type=str,default="/media/SSD_4TB/crispy_storage",help="Directory for output images.")
     parser.add_argument("--strength", type=float, default=0.3, help="Strength for img2img.")
     parser.add_argument("--steps", type=int, default=60, help="Inference steps.")
     parser.add_argument("--guidance", type=float, default=3.5, help="Guidance scale.")
@@ -342,19 +277,19 @@ def main():
 
     for model_key in args.models:
         for quant in args.quantization:
+            seed = args.seed  # Reset seed for each model to ensure comparability
             try:
                 generator = ImageGenerator(model_key, quant, device=args.device, monitor=monitor)
 
                 print(f"Generating txt2img with {model_key} ({quant})...")
 
+                # TODO: add check to avoid that args.prompts is larger than the number of lines in prompts_filtered.txt and to avoid loading too many prompts into memory at once if the file is huge (e.g. load in batches)
                 if args.prompt == "" and args.prompts > 0:
-                    with open("prompts_general.txt", "r") as file:
+                    with open("prompts_filtered.txt", "r") as file:
                         prompts = [file.readline().strip() for _ in range(args.prompts)]
                 else:
                     prompts = [args.prompt]
 
-                # if somebody can explain it I will put it back
-                # current_seed = args.seed + i if args.seed is not None else None
 
                 print(f"Generating {len(prompts)} images using {model_key} ({quant})...")
                 
@@ -363,10 +298,17 @@ def main():
                         prompt,
                         steps=args.steps,
                         guidance_scale=args.guidance,
-                        seed=args.seed,
+                        seed=seed,
                     )
+                    
+                    # if somebody can explain it I will put it back
+                    seed += 1  # ensure different seed for each model/quantization combo, but keep it deterministic across runs
+                    
+                    if img is None:
+                        print(f"Generation failed for model {model_key} with quantization {quant} on prompt {i+1}/{len(prompts)}: '{prompt}'")
+                        continue
 
-                    out_name = f"{args.output_dir}/{model_key}_{quant}_p{i}_seed{args.seed}.png"
+                    out_name = f"{args.output_dir}/{model_key}_{quant}_p{i}_seed{seed-1}.png"
                     
                     if os.path.exists(out_name):
                         print(f"[{i+1}/{len(prompts)}] File {out_name} already exists, replacing...")
