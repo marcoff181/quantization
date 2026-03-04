@@ -4,7 +4,7 @@ import glob
 import random
 import torch
 import gc
-from PIL import Image
+from PIL import Image, ImageOps
 
 from diffusers import (
     AutoPipelineForImage2Image,
@@ -222,6 +222,7 @@ def main():
     parser.add_argument("--guidance", type=float, default=3.5, help="Guidance scale.")
     parser.add_argument("--device", type=str, default=None, help="Device to use.")
     parser.add_argument("--seed", type=int, default=123, help="Fixed seed for reproducibility.")
+    parser.add_argument("--max_images", type=int, default=None, help="Maximum number of images to process from input_dir (default: all).")
     
     args = parser.parse_args()
     
@@ -252,6 +253,10 @@ def main():
         print(f"No images found in {args.input_dir}")
         return
 
+    if args.max_images:
+        input_images = input_images[:args.max_images]
+        print(f"Processing max {args.max_images} images.")
+
     for model_key in args.models:
         for quant in args.quantization:
             seed = args.seed
@@ -265,18 +270,19 @@ def main():
                         print(f"  Processing {os.path.basename(img_path)}...")
                         
                         input_img = Image.open(img_path).convert("RGB")
-                        width, height = input_img.size
+                        input_img = ImageOps.exif_transpose(input_img)  # ← Applica l'orientamento EXIF
+                        # width, height = input_img.size
 
-                        # Center crop 1024x1024
-                        if width > 1024 and height > 1024:
-                            left = (width - 1024)/2
-                            top = (height - 1024)/2
-                            right = (width + 1024)/2
-                            bottom = (height + 1024)/2
-                            input_img = input_img.crop((left, top, right, bottom))
+                        # # Center crop 1024x1024
+                        # if width > 1024 and height > 1024:
+                        #     left = (width - 1024)/2
+                        #     top = (height - 1024)/2
+                        #     right = (width + 1024)/2
+                        #     bottom = (height + 1024)/2
+                        #     input_img = input_img.crop((left, top, right, bottom))
                         
                         # current_seed = args.seed + i if args.seed is not None else None
-                        
+                        print(f"  Input image size before pipeline: {input_img.size}")
                         output_img = generator.generate(
                             args.prompt, 
                             image=input_img,
@@ -289,7 +295,7 @@ def main():
                         seed += 1
                         
                         base_name = os.path.splitext(os.path.basename(img_path))[0]
-                        seed_str = f"_seed{seed}" if seed is not None else ""
+                        seed_str = f"_seed{seed-1}" if seed is not None else ""
                         out_name = f"{args.output_dir}/{base_name}_{model_key}_{quant}{seed_str}.png"
                         output_img.save(out_name)
                         print(f"    Saved {out_name}")
