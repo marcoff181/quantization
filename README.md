@@ -12,6 +12,15 @@ python txt2img.py --prompts 10 --output_dir /media/SSD_4TB/crispy_storage/
 
 for now see README_1 for the rest
 
+## txt2img workflow
+
+```bash
+python txt2img.py --models sd15 \
+  --prompts_file 15_no_item_and_15_with_controversial.txt \
+  --quantization fp16 \
+  --output_dir /media/SSD_4TB/crispy_storage/to_modify
+```
+
 ## Inpainting workflow
 
 The inpainting workflow is split into two separate scripts. You can use a single CSV file with per-image prompts for both mask generation and inpainting.

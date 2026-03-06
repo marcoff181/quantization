@@ -23,6 +23,15 @@ MODELS = {
     "sd15": "runwayml/stable-diffusion-v1-5",
 }
 
+# High-quality defaults used when --steps/--guidance are not explicitly provided.
+QUALITY_PRESETS = {
+    "sd15": {"steps": 50, "guidance": 8.0},
+    "sdxl": {"steps": 50, "guidance": 7.5},
+    "sd3": {"steps": 45, "guidance": 6.0},
+    "sd35": {"steps": 45, "guidance": 6.0},
+    "flux": {"steps": 50, "guidance": 4.0},
+}
+
 
 def get_components(model_key):
     if model_key == "sdxl":
@@ -58,6 +67,13 @@ def quantization_levels(model_key):
             components_to_quantize=get_components(model_key),
         ),
     }
+
+
+def get_quality_params(model_key, user_steps, user_guidance):
+    preset = QUALITY_PRESETS.get(model_key, {"steps": 50, "guidance": 7.0})
+    steps = user_steps if user_steps is not None else preset["steps"]
+    guidance = user_guidance if user_guidance is not None else preset["guidance"]
+    return steps, guidance
 
 
 def flush():
@@ -250,12 +266,13 @@ def main():
     parser = argparse.ArgumentParser(description="Generate images using various Stable Diffusion models.")
     parser.add_argument("--models",nargs="+",default=MODELS.keys(),choices=MODELS.keys(),help="Models to use. Default is all available models")
     parser.add_argument("--prompt", type=str, default="",help="Prompt for generation.")
-    parser.add_argument("--prompts",type=int,default=100,help="If --prompt is not provided, how many prompts to load automatically")
-    parser.add_argument("--quantization",nargs="+",default=quantization_levels("sd35").keys(),choices=quantization_levels("sd35").keys(),help="Quantization levels.")
-    parser.add_argument("--output_dir",type=str,default="/media/SSD_4TB/crispy_storage",help="Directory for output images.")
-    parser.add_argument("--strength", type=float, default=0.3, help="Strength for img2img.")
-    parser.add_argument("--steps", type=int, default=60, help="Inference steps.")
-    parser.add_argument("--guidance", type=float, default=3.5, help="Guidance scale.")
+    parser.add_argument("--prompts",type=int, default=100,help="If --prompt is not provided, how many prompts to load automatically")
+    parser.add_argument("--prompts_file",type=str, default="prompts_filtered.txt",help="File to load prompts from if --prompt is not provided")
+    parser.add_argument("--quantization",nargs="+", default=quantization_levels("sd35").keys(),choices=quantization_levels("sd35").keys(),help="Quantization levels.")
+    parser.add_argument("--output_dir",type=str, default="/media/SSD_4TB/crispy_storage",help="Directory for output images.")
+    parser.add_argument("--strength", type=float, default=0.3, help="Strength for img2img only (not used in txt2img mode).")
+    parser.add_argument("--steps", type=int, default=None, help="Inference steps. If omitted, uses high-quality model defaults.")
+    parser.add_argument("--guidance", type=float, default=None, help="Guidance scale. If omitted, uses high-quality model defaults.")
     parser.add_argument("--device", type=str, default=None, help="Device to use.")
     parser.add_argument("--seed", type=int, default=123, help="Fixed seed for reproducibility.")
 
@@ -281,12 +298,24 @@ def main():
             try:
                 generator = ImageGenerator(model_key, quant, device=args.device, monitor=monitor)
 
+                effective_steps, effective_guidance = get_quality_params(
+                    model_key,
+                    args.steps,
+                    args.guidance,
+                )
+
                 print(f"Generating txt2img with {model_key} ({quant})...")
+                print(f"Quality params -> steps: {effective_steps}, guidance: {effective_guidance}")
 
                 # TODO: add check to avoid that args.prompts is larger than the number of lines in prompts_filtered.txt and to avoid loading too many prompts into memory at once if the file is huge (e.g. load in batches)
                 if args.prompt == "" and args.prompts > 0:
-                    with open("prompts_filtered.txt", "r") as file:
-                        prompts = [file.readline().strip() for _ in range(args.prompts)]
+                    print(f"Loading prompts from {args.prompts_file}...")
+                    with open(args.prompts_file, "r") as file:
+                        # load only if line is not empty and strip whitespace from each line
+                        prompts = [line.strip() for line in file if line.strip()]
+                        
+                    if len(prompts) < args.prompts:
+                        print(f"Warning: requested {args.prompts} prompts but only found {len(prompts)} in file. Using all available prompts.")
                 else:
                     prompts = [args.prompt]
 
@@ -296,8 +325,8 @@ def main():
                 for i, prompt in enumerate(prompts):
                     img = generator.generate(
                         prompt,
-                        steps=args.steps,
-                        guidance_scale=args.guidance,
+                        steps=effective_steps,
+                        guidance_scale=effective_guidance,
                         seed=seed,
                     )
                     
