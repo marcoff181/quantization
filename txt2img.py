@@ -7,7 +7,9 @@ import gc
 from diffusers import (
     AutoPipelineForImage2Image,
     AutoPipelineForText2Image,
+    Flux2KleinPipeline,
     FluxPipeline,
+    ZImagePipeline,
 )
 
 from diffusers.quantizers import PipelineQuantizationConfig
@@ -21,6 +23,19 @@ MODELS = {
     "sd35": "stabilityai/stable-diffusion-3.5-medium",
     "flux": "black-forest-labs/FLUX.1-dev",
     "sd15": "runwayml/stable-diffusion-v1-5",
+    "z-image": "Tongyi-MAI/Z-Image",
+    "flux2": "black-forest-labs/FLUX.2-klein-9B"
+}
+
+# High-quality defaults used when --steps/--guidance are not explicitly provided.
+QUALITY_PRESETS = {
+    "sd15": {"steps": 50, "guidance": 8.0},
+    "sdxl": {"steps": 50, "guidance": 7.5},
+    "sd3": {"steps": 45, "guidance": 6.0},
+    "sd35": {"steps": 45, "guidance": 6.0},
+    "flux": {"steps": 50, "guidance": 4.0},
+    "z-image": {"steps": 50, "guidance": 4.0},
+    "flux2": {"steps": 4, "guidance": 1.0}
 }
 
 
@@ -33,6 +48,8 @@ def get_components(model_key):
         return ["text_encoder", "text_encoder_2", "transformer"]
     elif model_key in ["sd3", "sd35"]:
         return ["text_encoder", "text_encoder_2", "text_encoder_3", "transformer"]
+    elif model_key in  ["z-image", "flux2"]:
+        return ["text_encoder", "transformer"]
     else:
         raise ValueError(f"Unknown model key: {model_key}")
 
@@ -106,7 +123,7 @@ class ImageGenerator:
             return torch.float32
 
         # Flux and SD3/SD3.5 support bfloat16 on compatible hardware, otherwise fallback to float16
-        if self.model_key in ["flux", "sd3", "sd35"]:
+        if self.model_key in ["flux", "sd3", "sd35", "z-image", "flux2"]:
             if self.device == "cuda" and torch.cuda.is_bf16_supported():
                 return torch.bfloat16
             return torch.float16
@@ -138,6 +155,20 @@ class ImageGenerator:
 
                 self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
                     target_model,
+                    quantization_config=q_config,
+                    torch_dtype=dtype,
+                )
+            
+            elif self.model_key == "z-image":
+                self.pipeline_t2i = ZImagePipeline.from_pretrained(
+                    model_id,
+                    quantization_config=q_config,
+                    torch_dtype=dtype,
+                )
+
+            elif self.model_key == "flux2":
+                self.pipeline_t2i = Flux2KleinPipeline.from_pretrained(
+                    model_id,
                     quantization_config=q_config,
                     torch_dtype=dtype,
                 )
@@ -247,7 +278,7 @@ class ImageGenerator:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate images using various Stable Diffusion models.")
+    parser = argparse.ArgumentParser(description="Generate images using multiple diffusion models.")
     parser.add_argument("--models",nargs="+",default=MODELS.keys(),choices=MODELS.keys(),help="Models to use. Default is all available models")
     parser.add_argument("--prompt", type=str, default="",help="Prompt for generation.")
     parser.add_argument("--prompts",type=int,default=100,help="If --prompt is not provided, how many prompts to load automatically")
