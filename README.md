@@ -21,6 +21,51 @@ python txt2img.py --models sd15 \
   --output_dir /media/SSD_4TB/crispy_storage/to_modify
 ```
 
+### Sharded single-model mode (for models that do not fit one GPU)
+
+Use `CUDA_VISIBLE_DEVICES` plus `--device_map` to shard one pipeline across multiple GPUs.
+
+```bash
+CUDA_VISIBLE_DEVICES=0,1 python txt2img.py \
+  --models flux \
+  --quantization fp16 \
+  --device_map balanced \
+  --dtype fp16 \
+  --max_memory 0=20GiB 1=20GiB \
+  --prompt "a cinematic photo of a red fox in snow" \
+  --output_dir /media/SSD_4TB/crispy_storage/elia/
+```
+
+Notes:
+- In sharded mode, the script does not call `.to(...)` and does not enable CPU offload hooks.
+- `hf_device_map` is printed after load so you can verify placement.
+- Sharded mode currently targets: `flux`, `flux2`, `sd3`, `sd35`.
+
+### Mixed quantization in one command (fp16 + fp8 + fp4)
+
+You can now run all quantization levels in a single invocation. In sharded mode:
+- `fp16` stays sharded.
+- `fp8`/`fp4` are controlled by `--sharded_quant_fallback`.
+
+Default behavior is `reroute`, which runs `fp8`/`fp4` as non-sharded single-device jobs.
+
+```bash
+CUDA_VISIBLE_DEVICES=0,1 python txt2img.py \
+  --models flux \
+  --quantization fp16 fp8 fp4 \
+  --device_map balanced \
+  --dtype fp16 \
+  --sharded_quant_fallback reroute \
+  --max_memory 0=20GiB 1=20GiB \
+  --prompt "a cinematic photo of a red fox in snow" \
+  --output_dir /media/SSD_4TB/crispy_storage/elia/
+```
+
+Fallback modes:
+- `--sharded_quant_fallback reroute` (default): reroute `fp8`/`fp4` to non-sharded execution.
+- `--sharded_quant_fallback skip`: skip `fp8`/`fp4` when `--device_map` is enabled.
+- `--sharded_quant_fallback error`: fail fast if `fp8`/`fp4` is requested with `--device_map`.
+
 ## Inpainting workflow
 
 The inpainting workflow is split into two separate scripts. You can use a single CSV file with per-image prompts for both mask generation and inpainting.

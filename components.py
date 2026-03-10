@@ -8,6 +8,8 @@ MODELS = {
     "sd35": "stabilityai/stable-diffusion-3.5-medium",
     "flux": "black-forest-labs/FLUX.1-dev",
     "sd15": "runwayml/stable-diffusion-v1-5",
+    "z-image": "Tongyi-MAI/Z-Image",
+    "flux2": "black-forest-labs/FLUX.2-klein-9B"
 }
 
 ignore = [
