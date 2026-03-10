@@ -1,0 +1,15 @@
+# Format: filename,mask_prompt,inpaint_prompt
+# mask_prompt: what to mask (used by generate_masks.py / CLIPSeg)
+# inpaint_prompt: how to inpaint (used by inpaint.py / Stable Diffusion)
+# Both full filename or just basename are supported
+
+00000,wall,a wall made of old weathered bricks with peeling paint and moss growing in the cracks
+00001,sky, a clear blue sky with a few fluffy white clouds
+00002,ring,bare skin, no jewelry, realistic hand
+00003,bed,unmade messy bed with a bright red jacket left on top
+00004,pizza,half-eaten pizza crusts inside a greasy cardboard box
+00005,wood,a dropped modern smartphone with a cracked screen resting on the wood
+00006,blue curtains,closed blue curtains with bright orange streetlights shining through from outside
+00007,sky,pitch black night sky with bright stars
+00008,street,wet asphalt reflecting streetlights, deep puddles of water
+00009,sky,clear bright sunny sky, high noon lighting
