@@ -38,16 +38,6 @@ QUALITY_PRESETS = {
     "flux2": {"steps": 4, "guidance": 1.0}
 }
 
-# High-quality defaults used when --steps/--guidance are not explicitly provided.
-QUALITY_PRESETS = {
-    "sd15": {"steps": 50, "guidance": 8.0},
-    "sdxl": {"steps": 50, "guidance": 7.5},
-    "sd3": {"steps": 45, "guidance": 6.0},
-    "sd35": {"steps": 45, "guidance": 6.0},
-    "flux": {"steps": 50, "guidance": 4.0},
-}
-
-
 def get_components(model_key):
     if model_key == "sdxl":
         return ["text_encoder", "text_encoder_2", "unet"]
