@@ -13,6 +13,8 @@ from diffusers import (
     QwenImageEditPipeline  # --- ADDED QWEN ---
 )
 
+from inpaint import resize_with_aspect_ratio_padding, restore_output_to_original, mean_abs_pixel_diff
+
 from diffusers.quantizers import PipelineQuantizationConfig
 from resource_monitor import ResourceMonitor
 
@@ -23,6 +25,14 @@ MODELS = {
     'sd35': 'stabilityai/stable-diffusion-3.5-medium',
     'firered' : 'FireRedTeam/FireRed-Image-Edit-1.1',
     # 'qwen' : 'Qwen/Qwen-Image-Edit', 
+}
+
+QUALITY_PRESETS = {
+    "sd15": {"steps": 50, "guidance": 8.0, "strength": 0.3},
+    "sd3": {"steps": 45, "guidance": 6.0, "strength": 0.3},
+    "sd35": {"steps": 45, "guidance": 6.0, "strength": 0.3},
+    "firered": {"steps": 50, "guidance": 8.0, "strength": 0.3},
+    # "qwen": {"steps": 50, "guidance": 8.0, "strength": 0.3},
 }
 
 def get_components(model_key):
@@ -56,6 +66,14 @@ def quantization_levels(model_key):
             components_to_quantize=get_components(model_key),
         ),
     }
+    
+def get_quality_params(model_key, user_steps, user_guidance, user_strength):
+    # CLI overrides win; otherwise use model-tuned quality defaults.
+    preset = QUALITY_PRESETS.get(model_key, {"steps": 50, "guidance": 7.0, "strength": 0.3})
+    steps = user_steps if user_steps is not None else preset["steps"]
+    guidance = user_guidance if user_guidance is not None else preset["guidance"]
+    strength = user_strength if user_strength is not None else preset["strength"]
+    return steps, guidance, strength
 
 def flush():
     gc.collect()
@@ -285,7 +303,21 @@ def main():
     parser.add_argument("--seed", type=int, default=123, help="Fixed seed for reproducibility.")
     parser.add_argument("--max_images", type=int, default=None, help="Maximum number of images to process from CSV (default: all).")
 
+    parser.add_argument("--preserve_aspect_ratio", action="store_true", help="Preserve image aspect ratio with smart padding.")
+    parser.add_argument("--max_dimension", type=int, default=512, help="Maximum dimension when preserving aspect ratio (default: 512). Longer side won't exceed this.")
+    parser.add_argument("--pad_color", type=str, default="128,128,128", help="RGB padding color as 'R,G,B' when preserving aspect ratio (default: 128,128,128 gray).")
+    
+
     args = parser.parse_args()
+    
+    try:
+        pad_colors = args.pad_color.split(',')
+        args.pad_color_rgb = tuple(int(c.strip()) for c in pad_colors)
+        if len(args.pad_color_rgb) != 3 or any(c < 0 or c > 255 for c in args.pad_color_rgb):
+            raise ValueError
+    except:
+        print(f"Invalid pad_color: {args.pad_color}. Using default 128,128,128")
+        args.pad_color_rgb = (128, 128, 128)
 
     os.makedirs(args.output_dir, exist_ok=True)
 
@@ -328,34 +360,90 @@ def main():
                         input_img = Image.open(img_path).convert("RGB")
                         input_img = ImageOps.exif_transpose(input_img)
                         
+                        ####
+                        
+                        original_size = input_img.size
+                        print(f"    Original size: {original_size}")
+                        
+                        # Apply aspect ratio preservation if requested
+                        resize_info = None
+                        if args.preserve_aspect_ratio:
+                            original_for_resize = input_img.copy()
+                            input_img, resize_info = resize_with_aspect_ratio_padding(
+                                input_img, 
+                                max_size=args.max_dimension, 
+                                pad_color=args.pad_color_rgb
+                            )
+                            print(f"    Resized for inpainting: {input_img.size} (with padding)")
+
+                        print(f"    Prompt used: '{prompt}'")
+                        
+                        
+                        ####
+                        
                         # --- FIX 4: Resize images to max 1024 AND force multiples of 16 ---
-                        input_img.thumbnail((1024, 1024), Image.Resampling.LANCZOS)
-                        w, h = input_img.size
-                        # Force divisible by 16 to avoid VAE/DiT patch crashing
-                        w = w - (w % 16)
-                        h = h - (h % 16)
-                        input_img = input_img.resize((w, h), Image.Resampling.LANCZOS)
+                        # input_img.thumbnail((1024, 1024), Image.Resampling.LANCZOS)
+                        # w, h = input_img.size
+                        # # Force divisible by 16 to avoid VAE/DiT patch crashing
+                       
+                        
+                        pre_pipeline_size = input_img.size
+                        w, h = pre_pipeline_size
+                        safe_w = w - (w % 16)
+                        safe_h = h - (h % 16)
+                        
+                        did_safe_resize = False
+                        if (w, h) != (safe_w, safe_h):
+                            # Facciamo un leggero downscale per evitare il crash dei VAE/DiT
+                            input_img = input_img.resize((safe_w, safe_h), Image.Resampling.LANCZOS)
+                            did_safe_resize = True
+                            print(f"    [Safe Resize] Adapted to multiples of 16: {input_img.size}")
                         
                         print(f"  Input image size before pipeline: {input_img.size}")
+                        
+                        effective_steps, effective_guidance, effective_strength = get_quality_params(
+                            model_key, 
+                            args.steps, 
+                            args.guidance, 
+                            args.strength,
+                        )
+                        print(f"    Using steps: {effective_steps}, guidance: {effective_guidance}, strength: {effective_strength}")
                         
                         output_img = generator.generate(
                             prompt,
                             image=input_img,
-                            strength=args.strength,
-                            steps=args.steps,
-                            guidance_scale=args.guidance,
+                            strength=effective_strength,
+                            steps=effective_steps,
+                            guidance_scale=effective_guidance,
                             seed=seed
                         )
+                        
+                        if did_safe_resize:
+                            output_img = output_img.resize(pre_pipeline_size, Image.Resampling.LANCZOS)
+                            print(f"    [Safe Restore] Restored to original size: {output_img.size}")
+                        
+                        delta_raw = mean_abs_pixel_diff(input_img, output_img)
+                        print(f"    Mean absolute pixel diff (raw output vs input): {delta_raw:.2f}")
+                        
+                        # Restore to original geometry after model generation
+                        if resize_info is not None:
+                            output_img, restore_mode = restore_output_to_original(output_img, resize_info)
+                            print(f"    Restored output geometry ({restore_mode}): {output_img.size}")
+                        
                         seed += 1
+                        
                         base_name = os.path.splitext(os.path.basename(img_path))[0]
                         seed_str = f"_seed{seed-1}" if seed is not None else ""
                         out_name = f"{args.output_dir}/{base_name}_{model_key}_{quant}{seed_str}.png"
                         output_img.save(out_name)
                         print(f"    Saved {out_name}")
+                        
                     except Exception as e_img:
                         print(f"    Failed to process {row.get('image_filename', 'unknown')}: {e_img}")
+                
                 flush()
                 del generator
+                torch.cuda.empty_cache()
                 flush()
             except Exception as e:
                 print(f"Failed to load/run {model_key} with {quant}: {e}")
