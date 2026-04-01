@@ -3,6 +3,7 @@ import os
 import csv
 import random
 import torch
+import inspect
 import gc
 from PIL import Image, ImageOps
 
@@ -28,11 +29,17 @@ MODELS = {
 }
 
 QUALITY_PRESETS = {
-    "sd15": {"steps": 50, "guidance": 8.0, "strength": 0.3},
-    "sd3": {"steps": 45, "guidance": 6.0, "strength": 0.3},
-    "sd35": {"steps": 45, "guidance": 6.0, "strength": 0.3},
-    "firered": {"steps": 50, "guidance": 8.0, "strength": 0.3},
-    # "qwen": {"steps": 50, "guidance": 8.0, "strength": 0.3},
+    # --- Famiglia Stable Diffusion ---
+    # Lo strength indica letteralmente il % di rumore (0.5 = 50% immagine originale, 50% rumore)
+    "sd15": {"steps": 50, "guidance": 7.5, "strength": 0.5},
+    "sd3":  {"steps": 40, "guidance": 5.0, "strength": 0.55}, # SD3 brucia i colori se la guidance è troppo alta
+    "sd35": {"steps": 40, "guidance": 5.0, "strength": 0.6},  # SD3.5 regge bene strength un po' più alti
+
+    # --- Modelli Instruct (Editing) ---
+    # Grazie alla formula: 1.0 + (1.0 - 0.5) = 1.5 di image_guidance_scale. 
+    # 1.5 è il valore standard consigliato dai creatori per mantenere intatta la foto!
+    "firered": {"steps": 50, "guidance": 7.0, "strength": 0.5},
+    "qwen":    {"steps": 50, "guidance": 6.0, "strength": 0.5},
 }
 
 def get_components(model_key):
@@ -238,29 +245,44 @@ class ImageGenerator:
             
         if self.model_key in ["firered", "qwen"]:
             # Instruct models often require more steps to remove noise/artifacts.
-            use_steps = steps
+            use_steps = steps if steps >= 50 else 50
             if steps < 50: 
-                print(f"  Warning: Forcing steps to 50 for {self.model_key} quality (input was {steps}).")
-                use_steps = 50
+                print(f"  Warning: Forcing steps to 50 for {self.model_key} quality.")
 
-            use_guidance = guidance_scale
+            use_guidance = guidance_scale if guidance_scale >= 4.0 else 4.0
             if guidance_scale < 4.0:
-                print(f"  Warning: Forcing guidance to 4.0 for {self.model_key} convergence (input was {guidance_scale}).")
-                use_guidance = 4.0
+                print(f"  Warning: Forcing guidance to 4.0 for {self.model_key} convergence.")
 
             kwargs = {
                 "prompt": prompt,
-                "negative_prompt": " " if self.model_key == "qwen" else "",  # Qwen uses " " in snippet
                 "image": image,
                 "num_inference_steps": use_steps,  
                 "generator": generator 
             }
             
-            # Route guidance scale to the correct parameter name based on model
-            if self.model_key == "qwen":
+            # Analizziamo dinamicamente quali argomenti accetta la pipeline "custom"
+            accepted_params = inspect.signature(self.pipeline_i2i.__call__).parameters
+            
+            # 1. Gestione Negative Prompt
+            if "negative_prompt" in accepted_params:
+                kwargs["negative_prompt"] = " " if self.model_key == "qwen" else ""
+
+            # 2. Gestione Guidance Scale (Testo)
+            if self.model_key == "qwen" and "true_cfg_scale" in accepted_params:
                 kwargs["true_cfg_scale"] = use_guidance
-            else:
+            elif "guidance_scale" in accepted_params:
                 kwargs["guidance_scale"] = use_guidance
+
+            # 3. Gestione Fedeltà all'Immagine (Il tuo 'strength')
+            if "image_guidance_scale" in accepted_params:
+                # Nei modelli Instruct, valori PIÙ ALTI di image_guidance significano PIÙ fedeltà all'originale.
+                # Mappiamo il tuo strength (0.0-1.0, dove basso = fedele) in image_guidance (es. 1.0-2.0).
+                mapped_img_guidance = 1.0 + (1.0 - strength) 
+                kwargs["image_guidance_scale"] = mapped_img_guidance
+                print(f"    [Instruct] Mapped user strength {strength} -> image_guidance_scale {mapped_img_guidance:.1f}")
+            elif "strength" in accepted_params:
+                # Se per caso la pipeline supporta lo strength classico, passiamolo
+                kwargs["strength"] = strength
 
             # Use inference mode for instruct models (as per Qwen snippet)
             with torch.inference_mode():
@@ -296,9 +318,9 @@ def main():
     parser.add_argument("--models", nargs='+', default=['sd15'], choices=MODELS.keys(), help="Models to use.")
     parser.add_argument("--quantization", nargs='+', default=['fp16'], choices=quantization_levels("sd35").keys(), help="Quantization levels.")
     parser.add_argument("--output_dir", type=str, default="output_img2img", help="Directory for output images.")
-    parser.add_argument("--strength", type=float, default=0.3, help="Denoising strength (0.0 to 1.0).")
-    parser.add_argument("--steps", type=int, default=30, help="Inference steps.")
-    parser.add_argument("--guidance", type=float, default=3.5, help="Guidance scale.")
+    parser.add_argument("--strength", type=float, default=None, help="Denoising strength (0.0 to 1.0).")
+    parser.add_argument("--steps", type=int, default=None, help="Inference steps.")
+    parser.add_argument("--guidance", type=float, default=None, help="Guidance scale.")
     parser.add_argument("--device", type=str, default=None, help="Device to use.")
     parser.add_argument("--seed", type=int, default=123, help="Fixed seed for reproducibility.")
     parser.add_argument("--max_images", type=int, default=None, help="Maximum number of images to process from CSV (default: all).")
