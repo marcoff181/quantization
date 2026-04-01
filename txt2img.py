@@ -2,123 +2,34 @@ import argparse
 import gc
 import os
 import random
+import time  # <-- Added for the sleep loop
 
 import torch
 from diffusers import (
     AutoPipelineForImage2Image,
     AutoPipelineForText2Image,
-    Flux2KleinPipeline,
     FluxPipeline,
     ZImagePipeline,
+    DiffusionPipeline,
 )
 from diffusers.quantizers import PipelineQuantizationConfig
 
 from resource_monitor import ResourceMonitor
 
+from shared_utils import (
+    MODELS, 
+    QUALITY_PRESETS, 
+    is_oom_error, 
+    flush, 
+    quantization_levels, 
+    get_quality_params
+)
 
-# --- Configuration & Constants ---
-MODELS = {
-    "sdxl": "stabilityai/stable-diffusion-xl-base-1.0",
-    "sd3": "stabilityai/stable-diffusion-3-medium-diffusers",
-    "sd35": "stabilityai/stable-diffusion-3.5-medium",
-    "flux": "black-forest-labs/FLUX.1-dev",
-    "sd15": "runwayml/stable-diffusion-v1-5",
-    "z-image": "Tongyi-MAI/Z-Image",
-    "flux2": "black-forest-labs/FLUX.2-klein-9B",
-}
-# High-quality defaults used when --steps/--guidance are not explicitly provided.
-QUALITY_PRESETS = {
-    "sd15": {"steps": 50, "guidance": 8.0},
-    "sdxl": {"steps": 50, "guidance": 7.5},
-    "sd3": {"steps": 45, "guidance": 6.0},
-    "sd35": {"steps": 45, "guidance": 6.0},
-    "flux": {"steps": 50, "guidance": 4.0},
-    "z-image": {"steps": 50, "guidance": 4.0},
-    "flux2": {"steps": 4, "guidance": 1.0},
-}
 
 # Conservative first-pass sharding support: large transformer-based pipelines.
-SHARDED_SUPPORTED_MODELS = {"flux", "flux2", "sd3", "sd35"}
+SHARDED_SUPPORTED_MODELS = {"flux", "sd3", "sd35", "pg25"}
 # Quantized bitsandbytes modules are routed away from auto-sharded mode by default.
 SHARDED_UNSUPPORTED_QUANT = {"fp8", "fp4"}
-
-
-def get_components(model_key):
-    # Components selected here are the ones eligible for bitsandbytes quantization.
-    if model_key == "sdxl":
-        return ["text_encoder", "text_encoder_2", "unet"]
-    if model_key == "sd15":
-        return ["text_encoder", "unet"]
-    if model_key == "flux":
-        return ["text_encoder", "text_encoder_2", "transformer"]
-    if model_key in ["sd3", "sd35"]:
-        return ["text_encoder", "text_encoder_2", "text_encoder_3", "transformer"]
-    if model_key in ["z-image", "flux2"]:
-        return ["text_encoder", "transformer"]
-    raise ValueError(f"Unknown model key: {model_key}")
-
-
-def quantization_levels(model_key):
-    # fp16 means unquantized weights at the selected torch dtype.
-    return {
-        "fp16": None,
-        "fp8": PipelineQuantizationConfig(
-            quant_backend="bitsandbytes_8bit",
-            quant_kwargs={
-                "load_in_8bit": True,
-            },
-            components_to_quantize=get_components(model_key),
-        ),
-        "fp4": PipelineQuantizationConfig(
-            quant_backend="bitsandbytes_4bit",
-            quant_kwargs={
-                "load_in_4bit": True,
-                "bnb_4bit_use_double_quant": True,
-                "bnb_4bit_quant_type": "nf4",
-                "bnb_4bit_compute_dtype": torch.bfloat16,
-            },
-            components_to_quantize=get_components(model_key),
-        ),
-    }
-
-
-def get_quality_params(model_key, user_steps, user_guidance):
-    # CLI overrides win; otherwise use model-tuned quality defaults.
-    preset = QUALITY_PRESETS.get(model_key, {"steps": 50, "guidance": 7.0})
-    steps = user_steps if user_steps is not None else preset["steps"]
-    guidance = user_guidance if user_guidance is not None else preset["guidance"]
-    return steps, guidance
-
-
-def parse_max_memory(entries):
-    if not entries:
-        return None
-    max_memory = {}
-    for entry in entries:
-        if "=" not in entry:
-            raise ValueError(
-                f"Invalid --max_memory entry '{entry}'. Expected format like 0=20GiB or cpu=64GiB."
-            )
-        key, value = entry.split("=", 1)
-        key = key.strip().lower()
-        value = value.strip()
-        # Accelerate accepts integer GPU ids and the literal "cpu" key.
-        if key == "cpu":
-            max_memory["cpu"] = value
-        else:
-            max_memory[int(key)] = value
-    return max_memory
-
-
-def flush():
-    # Free as much memory as possible between model runs.
-    gc.collect()
-    if torch.cuda.is_available():
-        for idx in range(torch.cuda.device_count()):
-            with torch.cuda.device(idx):
-                torch.cuda.empty_cache()
-    elif torch.backends.mps.is_available():
-        torch.mps.empty_cache()
 
 
 class ImageGenerator:
@@ -128,39 +39,23 @@ class ImageGenerator:
         quantization,
         device=None,
         monitor=None,
-        device_map=None,
         max_memory=None,
         dtype_override="auto",
     ):
         self.model_key = model_key
         self.quantization = quantization
         self.monitor = monitor
-        self.device_map = device_map
-        self.max_memory = max_memory
         self.dtype_override = dtype_override
-        # "sharded" means one model split across multiple visible GPUs via accelerate.
-        self.sharded = self.device_map not in (None, "none")
-        if self.sharded:
-            if not torch.cuda.is_available():
-                raise RuntimeError("device_map mode requires CUDA.")
-            self.device = None
-        else:
-            if device is None:
-                if torch.cuda.is_available():
-                    self.device = "cuda"
-                elif torch.backends.mps.is_available():
-                    self.device = "mps"
-                else:
-                    self.device = "cpu"
+        if device is None:
+            if torch.cuda.is_available():
+                self.device = "cuda"
+            elif torch.backends.mps.is_available():
+                self.device = "mps"
             else:
-                self.device = device
-        if self.sharded:
-            print(f"Using sharded pipeline with device_map={self.device_map}")
-            print(f"Visible CUDA devices: {torch.cuda.device_count()}")
-            if self.max_memory:
-                print(f"Max memory map: {self.max_memory}")
+                self.device = "cpu"
         else:
-            print(f"Using device: {self.device}")
+            self.device = device
+        print(f"Using device: {self.device}")
         self.pipeline_i2i = None
         self.pipeline_t2i = None
         self.model_size_mb = 0.0
@@ -177,33 +72,19 @@ class ImageGenerator:
             )
 
     def _get_dtype(self):
-        # Explicit dtype override applies only to sharded mode for predictable placement.
-        if self.sharded and self.dtype_override == "fp16":
-            return torch.float16
-        if self.sharded and self.dtype_override == "bf16":
-            if not (torch.cuda.is_available() and torch.cuda.is_bf16_supported()):
-                raise RuntimeError(
-                    "--dtype bf16 requested for sharded mode, but bf16 is not supported by this CUDA setup."
-                )
-            return torch.bfloat16
-
-        if not self.sharded and self.device == "cpu":
+        if self.device == "cpu":
             return torch.float32
-        if self.model_key in ["flux", "sd3", "sd35", "z-image", "flux2"]:
+        if self.model_key in ["flux", "sdxl", "sd3", "sd35", "z-image"]:
             if torch.cuda.is_available() and torch.cuda.is_bf16_supported():
                 return torch.bfloat16
             return torch.float16
-        return torch.float16 if torch.cuda.is_available() or self.sharded else torch.float32
+        return torch.float16 if torch.cuda.is_available() else torch.float32
     
     def _build_common_load_kwargs(self, dtype, q_config):
-        # Shared kwargs for every pipeline class, with optional sharding knobs.
+        # Shared kwargs for every pipeline class.
         kwargs = {"torch_dtype": dtype}
         if q_config is not None:
             kwargs["quantization_config"] = q_config
-        if self.sharded:
-            kwargs["device_map"] = self.device_map
-            if self.max_memory:
-                kwargs["max_memory"] = self.max_memory
         return kwargs
 
     def _load_text2image_pipeline(self, model_id, common_kwargs):
@@ -226,55 +107,26 @@ class ImageGenerator:
                 **common_kwargs,
             )
 
-        if self.model_key == "flux2":
-            return Flux2KleinPipeline.from_pretrained(
-                model_id,
-                **common_kwargs,
-            )
-
-        variant = (
-            "fp16"
-            if (self.quantization == "fp16" and not self.sharded and self.device != "cpu")
-            else None
-        )
+        # THE FIX: Always use the fp16 variant on GPU to prevent FP16/FP32 bias collisions 
+        variant = "fp16" if self.device != "cpu" else None
+        
         extra_kwargs = dict(common_kwargs)
         extra_kwargs["use_safetensors"] = True
+        
         if variant is not None:
             extra_kwargs["variant"] = variant
+            
         return AutoPipelineForText2Image.from_pretrained(
             model_id,
             **extra_kwargs,
         )
 
     def _configure_pipeline_device(self):
-        if self.sharded:
-            # Sharded mode relies on accelerate placement; avoid manual moves/offload hooks.
-            print("  Loaded with device map; skipping .to(...) and CPU offload.")
-            if hasattr(self.pipeline_t2i, "hf_device_map"):
-                print(f"  hf_device_map: {self.pipeline_t2i.hf_device_map}")
-            return
-
-        if self.quantization == "fp8":
-            try:
-                self.pipeline_t2i.to(self.device)
-                print(f"  Moved fp8 pipeline to {self.device}")
-            except Exception:
-                print(
-                    f"  Warning: could not move fp8 pipeline to {self.device}, already on device"
-                )
-            return
-
         try:
-            self.pipeline_t2i.enable_model_cpu_offload()
-            print(f"  Enabled CPU offload for {self.model_key}")
+            self.pipeline_t2i.to(self.device)
+            print(f"  Moved pipeline to {self.device}")
         except Exception:
-            print("  Warning: cpu offload failed, trying sequential offload...")
-            try:
-                self.pipeline_t2i.enable_sequential_cpu_offload()
-                print(f"  Enabled sequential CPU offload for {self.model_key}")
-            except Exception as e2:
-                print(f"  Warning: sequential offload also failed: {e2}")
-                self.pipeline_t2i.to(self.device)
+            print(f"  Warning: could not move pipeline to {self.device}, already on device")
 
     def _build_img2img_pipeline(self):
         # Best-effort conversion: txt2img is primary, img2img is optional.
@@ -354,6 +206,9 @@ class ImageGenerator:
                 )
             return result
         except Exception as e:
+            # Bubble up OOM errors so the main loop can sleep and retry
+            if is_oom_error(e):
+                raise e
             print(f"Text-to-Image not supported for this model configuration: {e}")
             return None
 
@@ -418,61 +273,10 @@ def build_parser():
     parser.add_argument(
         "--seed", type=int, default=123, help="Fixed seed for reproducibility."
     )
-    parser.add_argument(
-        "--device_map",
-        type=str,
-        default="none",
-        choices=["none", "balanced", "auto"],
-        help="Shard a single pipeline across visible GPUs. Use with CUDA_VISIBLE_DEVICES=0,1 etc.",
-    )
-    parser.add_argument(
-        "--max_memory",
-        nargs="*",
-        default=None,
-        help="Optional max memory map, e.g. --max_memory 0=20GiB 1=20GiB cpu=64GiB",
-    )
-    parser.add_argument(
-        "--dtype",
-        type=str,
-        default="auto",
-        choices=["auto", "fp16", "bf16"],
-        help="Dtype override for sharded mode. Use fp16/bf16 for predictable placement.",
-    )
-    parser.add_argument(
-        "--sharded_quant_fallback",
-        type=str,
-        default="reroute",
-        choices=["reroute", "skip", "error"],
-        help=(
-            "Behavior for fp8/fp4 when --device_map is enabled: "
-            "reroute to non-sharded single-device run, skip, or error."
-        ),
-    )
     return parser
 
 
-def validate_runtime_args(args):
-    # Guardrails for mutually exclusive execution modes.
-    if args.device_map != "none" and args.device is not None:
-        raise ValueError("--device and --device_map are mutually exclusive.")
-
-    if args.device_map != "none" and not torch.cuda.is_available():
-        raise RuntimeError("--device_map requires CUDA.")
-
-    if args.device_map != "none" and torch.cuda.device_count() < 2:
-        print("Warning: --device_map was requested but fewer than 2 visible CUDA devices were found.")
-
-    if args.device_map != "none":
-        unsupported = [m for m in args.models if m not in SHARDED_SUPPORTED_MODELS]
-        if unsupported:
-            raise ValueError(
-                "Sharded mode currently supports only models "
-                f"{sorted(SHARDED_SUPPORTED_MODELS)}. Unsupported: {unsupported}"
-            )
-
-
 def get_reroute_device(args):
-    # Preferred single-device target for rerouted quantized runs.
     if args.device:
         return args.device
     if torch.cuda.is_available():
@@ -483,59 +287,23 @@ def get_reroute_device(args):
 
 
 def build_run_plan(args):
-    # Build a per-quantization execution plan so one invocation can mix modes safely.
+    # Build a per-quantization execution plan for single device only.
     plan = []
-    sharded_mode = args.device_map != "none"
-    reroute_device = get_reroute_device(args)
-
     for quant in args.quantization:
-        if sharded_mode and quant in SHARDED_UNSUPPORTED_QUANT:
-            if args.sharded_quant_fallback == "error":
-                raise ValueError(
-                    "Sharded mode only supports fp16/bf16 loading right now. "
-                    f"Unsupported quantization in sharded mode: {quant}"
-                )
-
-            if args.sharded_quant_fallback == "skip":
-                print(
-                    f"Skipping quantization '{quant}' in sharded mode "
-                    "because --sharded_quant_fallback=skip."
-                )
-                continue
-
-            # "reroute": keep one-command UX by running this quant level non-sharded.
-            print(
-                f"Rerouting quantization '{quant}' to non-sharded execution on device {reroute_device}."
-            )
-            plan.append(
-                {
-                    "quant": quant,
-                    "device_map": "none",
-                    "device": reroute_device,
-                    "dtype_override": "auto",
-                }
-            )
-            continue
-
         plan.append(
             {
                 "quant": quant,
-                "device_map": args.device_map,
                 "device": args.device,
-                "dtype_override": args.dtype,
+                "dtype_override": "auto",
             }
         )
-
     if not plan:
         raise ValueError("No runnable quantization levels remain after applying fallback policy.")
-
     return plan
 
 
 def resolve_monitor_device(args):
     # Metrics collector currently tracks one device type per invocation.
-    if args.device_map != "none":
-        return "cuda"
     if args.device:
         return args.device
     if torch.cuda.is_available():
@@ -562,54 +330,82 @@ def load_prompts(args):
 
 
 def generate_for_config(args, monitor, parsed_max_memory, model_key, run_cfg, prompts):
-    # run_cfg is per-quantization execution policy (sharded vs rerouted device mode).
     quant = run_cfg["quant"]
     seed = args.seed
-    generator = ImageGenerator(
-        model_key,
-        quant,
-        device=run_cfg["device"],
-        monitor=monitor,
-        device_map=run_cfg["device_map"],
-        max_memory=parsed_max_memory,
-        dtype_override=run_cfg["dtype_override"],
-    )
+    
+    generator = None
+    # 1. RETRY LOOP FOR MODEL LOADING (OOM can happen here when VRAM is stolen)
+    while True:
+        try:
+            generator = ImageGenerator(
+                model_key,
+                quant,
+                device=run_cfg["device"],
+                monitor=monitor,
+                max_memory=parsed_max_memory,
+                dtype_override=run_cfg["dtype_override"],
+            )
+            break  # Exit loop if successfully loaded
+        except Exception as e:
+            if is_oom_error(e):
+                print(f"[{model_key} - {quant}] GPU OOM during model load! Waiting 60 seconds...")
+                flush()
+                time.sleep(60)  # Sleep idly and retry
+            else:
+                raise e  # Bubble up if it's a completely different error
 
-    effective_steps, effective_guidance = get_quality_params(
+    effective_steps, effective_guidance, _ = get_quality_params(
         model_key,
         args.steps,
         args.guidance,
     )
     print(f"Generating txt2img with {model_key} ({quant})...")
-    print(
-        f"Quality params -> steps: {effective_steps}, guidance: {effective_guidance}"
-    )
+    print(f"Quality params -> steps: {effective_steps}, guidance: {effective_guidance}")
     print(f"Generating {len(prompts)} images using {model_key} ({quant})...")
 
-    for i, prompt in enumerate(prompts):
-        img = generator.generate(
-            prompt,
-            steps=effective_steps,
-            guidance_scale=effective_guidance,
-            seed=seed,
-        )
-        seed += 1
+    # 2. RETRY LOOP FOR IMAGE GENERATION
 
-        if img is None:
-            print(
-                f"Generation failed for model {model_key} with quantization {quant} "
-                f"on prompt {i + 1}/{len(prompts)}: '{prompt}'"
-            )
+    i = 0
+    while i < len(prompts):
+        prompt = prompts[i]
+        out_name = f"{args.output_dir}/{model_key}_{quant}_p{i}_seed{seed}.png"
+
+        # Skip generation if output file already exists
+        if os.path.exists(out_name):
+            print(f"[{i + 1}/{len(prompts)}] File {out_name} already exists, skipping...")
+            i += 1
+            seed += 1
             continue
 
-        out_name = (
-            f"{args.output_dir}/{model_key}_{quant}_p{i}_seed{seed - 1}.png"
-        )
-        if os.path.exists(out_name):
-            print(f"[{i + 1}/{len(prompts)}] File {out_name} already exists, replacing...")
-        else:
-            print(f"[{i + 1}/{len(prompts)}] Saved image {out_name}")
-        img.save(out_name)
+        try:
+            img = generator.generate(
+                prompt,
+                steps=effective_steps,
+                guidance_scale=effective_guidance,
+                seed=seed,
+            )
+
+            if img is not None:
+                img.save(out_name)
+                print(f"[{i + 1}/{len(prompts)}] Saved image {out_name}")
+            else:
+                print(f"[{i + 1}/{len(prompts)}] Generation failed (non-OOM error) for prompt: '{prompt}'")
+
+            # Move on to the next prompt upon success or a normal error
+            i += 1
+            seed += 1
+
+        except Exception as e:
+            if is_oom_error(e):
+                print(f"[{model_key} - {quant}] GPU OOM during generation! Waiting 60 seconds...")
+                flush()
+                time.sleep(60)
+                # Notice we DO NOT increment 'i' or 'seed' here, so the while loop tries the EXACT same image again.
+            else:
+                print(f"Fatal generation error: {e}")
+                # Move past it if it's completely broken so the whole batch doesn't stall forever
+                i += 1
+                seed += 1
 
     del generator
     flush()
@@ -619,10 +415,8 @@ def main():
     parser = build_parser()
     args = parser.parse_args()
 
-    validate_runtime_args(args)
     run_plan = build_run_plan(args)
 
-    parsed_max_memory = parse_max_memory(args.max_memory)
     os.makedirs(args.output_dir, exist_ok=True)
 
     prompts = load_prompts(args)
@@ -636,7 +430,7 @@ def main():
                 generate_for_config(
                     args,
                     monitor,
-                    parsed_max_memory,
+                    None,  
                     model_key,
                     run_cfg,
                     prompts,

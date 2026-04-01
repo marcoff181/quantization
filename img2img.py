@@ -19,75 +19,14 @@ from inpaint import resize_with_aspect_ratio_padding, restore_output_to_original
 from diffusers.quantizers import PipelineQuantizationConfig
 from resource_monitor import ResourceMonitor
 
-# --- Configuration & Constants ---
-MODELS = {
-    'sd15': 'runwayml/stable-diffusion-v1-5',
-    'sd3': 'stabilityai/stable-diffusion-3-medium-diffusers',
-    'sd35': 'stabilityai/stable-diffusion-3.5-medium',
-    'firered' : 'FireRedTeam/FireRed-Image-Edit-1.1',
-    # 'qwen' : 'Qwen/Qwen-Image-Edit', 
-}
-
-QUALITY_PRESETS = {
-    # --- Famiglia Stable Diffusion ---
-    # Lo strength indica letteralmente il % di rumore (0.5 = 50% immagine originale, 50% rumore)
-    "sd15": {"steps": 50, "guidance": 7.5, "strength": 0.5},
-    "sd3":  {"steps": 40, "guidance": 5.0, "strength": 0.55}, # SD3 brucia i colori se la guidance è troppo alta
-    "sd35": {"steps": 40, "guidance": 5.0, "strength": 0.6},  # SD3.5 regge bene strength un po' più alti
-
-    # --- Modelli Instruct (Editing) ---
-    # Grazie alla formula: 1.0 + (1.0 - 0.5) = 1.5 di image_guidance_scale. 
-    # 1.5 è il valore standard consigliato dai creatori per mantenere intatta la foto!
-    "firered": {"steps": 50, "guidance": 7.0, "strength": 0.5},
-    "qwen":    {"steps": 50, "guidance": 6.0, "strength": 0.5},
-}
-
-def get_components(model_key):
-    if model_key == "sd15":
-        return ["text_encoder", "unet"]
-    elif model_key in ["firered", "qwen"]: 
-        return ["text_encoder", "transformer"]
-    elif model_key in ["sd3", "sd35"]:
-        return ["text_encoder", "text_encoder_2", "text_encoder_3", "transformer"]
-    else:
-        raise ValueError(f"Unknown model key: {model_key}")
-
-def quantization_levels(model_key):
-    return {
-        "fp16": None,
-        "fp8": PipelineQuantizationConfig(
-            quant_backend="bitsandbytes_8bit",
-            quant_kwargs={
-                "load_in_8bit": True,
-            },
-            components_to_quantize=get_components(model_key),
-        ),
-        "fp4": PipelineQuantizationConfig(
-            quant_backend="bitsandbytes_4bit",
-            quant_kwargs={
-                "load_in_4bit": True,
-                "bnb_4bit_use_double_quant": True,
-                "bnb_4bit_quant_type": "nf4",
-                "bnb_4bit_compute_dtype": torch.bfloat16,
-            },
-            components_to_quantize=get_components(model_key),
-        ),
-    }
-    
-def get_quality_params(model_key, user_steps, user_guidance, user_strength):
-    # CLI overrides win; otherwise use model-tuned quality defaults.
-    preset = QUALITY_PRESETS.get(model_key, {"steps": 50, "guidance": 7.0, "strength": 0.3})
-    steps = user_steps if user_steps is not None else preset["steps"]
-    guidance = user_guidance if user_guidance is not None else preset["guidance"]
-    strength = user_strength if user_strength is not None else preset["strength"]
-    return steps, guidance, strength
-
-def flush():
-    gc.collect()
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-    elif torch.backends.mps.is_available():
-        torch.mps.empty_cache()
+from shared_utils import (
+    MODELS, 
+    QUALITY_PRESETS, 
+    is_oom_error, 
+    flush, 
+    quantization_levels, 
+    get_quality_params
+)
 
 class ImageGenerator:
     def __init__(self, model_key, quantization, device=None, monitor=None):
