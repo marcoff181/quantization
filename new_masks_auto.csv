@@ -1,0 +1,104 @@
+# Format: filename,mask_prompt,inpaint_prompt
+# mask_prompt: what to mask (used by generate_masks.py / CLIPSeg)
+# inpaint_prompt: how to inpaint (used by inpaint.py / Stable Diffusion)
+# Both full filename or just basename are supported
+00000,the gothic building in the painting,a modern glass skyscraper
+00001,the tree branches in the foreground,a clear unobstructed view of the hotel
+00002,the blue cloth the baby is wrapped in,a soft yellow blanket with a star pattern
+00003,the colorful LED strip lighting,a single strip of warm white light
+00004,one of the pizzas,a large bowl of fresh salad
+00005,the industrial equipment on the wall,a large ornate antique mirror
+00006,the blue curtain backdrop,a digital screen showing a forest landscape
+00007,the man and woman,two golden statues
+00008,the three people,a vintage bicycle leaning against the wall
+00009,the 'Pioneer Square' label,a small planter box with red flowers
+00010,the center light,a small crackling bonfire
+00011,the white lily flowers,bright red roses
+00012,the complex electrical wiring,the inside of a mechanical watch with gears
+00013,the fuel prices on the sign,the words 'ICE COLD DRINKS'
+00014,the Thomas the Tank Engine character trains,a sleek modern bullet train
+00015,the colorful flags,hanging strings of paper lanterns
+00016,one of the people in the group,a brown bear
+00017,the boy's bright green shirt,a red and blue superhero shirt
+00018,the white wardrobes,dark wood antique armoires
+00019,one of the large cranes,a giant metallic robot
+00020,the figures made of paper cups,intricate origami animals
+00021,the outdoor table and chair,a park bench
+00022,one of the garbage trucks,a colorful ice cream truck
+00023,the black book,a stack of old letters tied with a ribbon
+00024,the white wooden lawn chair,a comfortable red beanbag
+00025,the cake,a large stack of pizzas
+00026,the large green dome,a multifaceted glass geodesic dome
+00027,the green plastic waste and recycling bins,three large terracotta pots with plants
+00028,a patch of the dry grass in the foreground,a small patch of colorful wildflowers
+00029,an area of the landscape visible between the trees,a small log cabin with a smoking chimney
+00030,a section of the sand on the beach,a colorful beach towel a book and a straw hat
+00031,the rear wheel of the sports car,a futuristic glowing wheel
+00032,the lone evergreen tree,a weeping willow tree
+00033,the festive lights,hanging vines with glowing flowers
+00034,the brown dog,a fluffy white cat
+00035,the paper crafts on the table,tablet computers displaying drawings
+00036,the brick facade of the building,a modern glass and steel facade
+00037,the top of one of the rock formations,a small ancient stone observatory
+00038,the children's green and black tracksuits,brightly colored raincoats and boots
+00039,a pile of dirt,a large neat stack of bricks
+00040,the hikers,a group of penguins
+00041,the large blue and red tanker ship,an old wooden sailing ship with tall masts
+00042,the sign being held by the women,a large decorated birthday cake
+00043,a section of the water,a pod of dolphins jumping
+00044,the bare trees,cherry blossom trees in full bloom
+00045,the Bay Bridge visible through the window,the Eiffel Tower
+00046,the food on the restaurant table,a large board game set up to be played
+00047,the river at the bottom of the canyon,a flow of molten lava
+00048,the parking lot surface,a field of green grass
+00049,the white painted line,a trail of small colorful flowers
+00050,the dragon-shaped lantern,a phoenix-shaped lantern
+00051,the Shiba Inu dog,a small red fox
+00052,the miscellaneous hardware supplies,a collection of seashells and starfish
+00053,the label on the compressor,an engraved floral pattern
+00054,the blue dashboard,a polished wooden dashboard
+00055,the man's glasses,a pair of dark sunglasses
+00056,the worksheet on the desk,an open laptop
+00057,the graveyard in the foreground,a beautifully manicured flower garden
+00058,a section of the rocky seabed,a sunken treasure chest overflowing with gold coins
+00059,the air conditioning units,large modern sculptures
+00060,the two red electronic circuit boards,two bars of chocolate in their wrappers
+00061,the elaborate and colorful archway lantern display,an archway made of natural twisted tree branches and flowers
+00062,the gravel-covered ground,a lush green lawn with a small puddle
+00063,the dog's cream-colored fur,brindle-patterned fur
+00064,the plastic toys,wooden building blocks
+00065,the stone gothic-style building complex,a hyper-modern complex of glass buildings
+00066,the protest camp with signs,a farmers' market with stalls of fruit and vegetables
+00067,an area on the green hillside,a waterfall cascading down the rocks
+00068,the large toilet,an ornate golden throne
+00069,the car engine components,a complex network of plant roots and glowing mushrooms
+00070,the damage on the rear corner of the car,a pristine undamaged blue paint finish
+00071,the microphone,a large ice cream cone
+00072,the paved road,a cobblestone path
+00073,the man's black leather clothing,a suit of medieval armor
+00074,the art projects on the students' desks,laptops
+00075,the sign for Bubba Gump Shrimp Co.,a neon sign for a retro diner
+00076,the large 'Lux' brand advertisement,a large colorful graffiti mural
+00077,the futuristic-looking cream-colored helmet,an ancient ornate samurai helmet
+00078,a central area of the abstract image,a single detailed realistic human eye
+00079,the red and yellow vintage tram,a horse-drawn carriage
+00080,the mountain bike,a classic red scooter
+00081,the side of fries,a side of crispy bacon
+00082,the Hot Wheels Huayra Roadster toy car,a Hot Wheels Batmobile toy car
+00083,an area of dirt in the construction area,a small clear pond with lily pads
+00084,the American flag being held by the person,a large electric guitar
+00085,the classic dark-colored Ferrari sports car,a vintage baby-blue Volkswagen Beetle
+00086,the hot air balloon basket,the open cockpit of a biplane
+00087,the young boy,a mountain goat
+00088,the raw marbled beef slices,slices of colorful tropical fruit
+00089,the large green mobile construction crane,a large ancient tree
+00090,the lit stone church tower,an old stone lighthouse with a glowing lamp
+00091,the summit of the mountain peak,a small stone castle
+00092,the dirt floors,polished marble floors
+00093,the two people in front of the waterfall,two large grizzly bears
+00094,the rocky mountain ridge trail,a yellow brick road
+00095,the 'Do Not Pet' harness on the dog,a colorful floral lei around the dog's neck
+00096,the open car engine,a miniature cityscape with tiny buildings and roads
+00097,the illuminated arcade game,a glowing crystal ball on a stand
+00098,the white event tent,a colorful circus tent
+00099,the large standing stones at Stonehenge,giant realistic-looking chess pieces
