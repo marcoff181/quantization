@@ -1,16 +1,8 @@
 from diffusers import DiffusionPipeline
 
-# --- Configuration & Constants ---
-MODELS = {
-    "sdxl": "stabilityai/stable-diffusion-xl-base-1.0",
-    # UPDATED: Replaced sd2 with sd3
-    "sd3": "stabilityai/stable-diffusion-3-medium-diffusers",
-    "sd35": "stabilityai/stable-diffusion-3.5-medium",
-    "flux": "black-forest-labs/FLUX.1-dev",
-    "sd15": "runwayml/stable-diffusion-v1-5",
-    "z-image": "Tongyi-MAI/Z-Image",
-    "flux2": "black-forest-labs/FLUX.2-klein-9B"
-}
+from shared_utils import MODELS
+
+""" Simple script to check what is quantizable from the selected models """
 
 ignore = [
     "_class_name",
