@@ -1,0 +1,24 @@
+from transformers import CLIPTokenizer
+
+# Inizializza il tokenizer
+clip_tok = CLIPTokenizer.from_pretrained("openai/clip-vit-base-patch32")
+
+input_file = "./prompts_filtered.txt"
+output_file = "./prompts_token_restrained.txt"
+
+with open(input_file, "r", encoding="utf-8") as f_in, \
+     open(output_file, "w", encoding="utf-8") as f_out:
+    
+    for line in f_in:
+        prompt = line.strip()
+        if not prompt:
+            continue
+            
+        # encode() include SOT e EOT (limite totale 77)
+        tokens = clip_tok.encode(prompt)
+        
+        if len(tokens) <= 77:
+            f_out.write(prompt + "\n")
+        else:
+            # Opzionale: logga i prompt scartati per debug
+            print(f"Prompt scartato ({len(tokens)} token): {prompt[:50]}...")
