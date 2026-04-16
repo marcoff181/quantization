@@ -4,6 +4,8 @@ import glob
 import numpy as np
 from PIL import Image, ImageOps, ImageFilter
 
+from shared_utils import load_prompts_file
+
 try:
     from transformers import CLIPSegProcessor, CLIPSegForImageSegmentation
     import torch
@@ -60,54 +62,34 @@ class AutoMaskGenerator:
         with torch.no_grad():
             logits = self.model(**inputs).logits
 
+        # Get probabilities
         probs = torch.sigmoid(logits)[0].detach().float().cpu().numpy()
-        binary = (probs >= threshold).astype(np.uint8) * 255
-        mask_img = Image.fromarray(binary, mode="L").resize(image.size, Image.Resampling.BILINEAR)
+        
+        # 1. IMPROVEMENT: Min-Max Normalize the probabilities
+        # This ensures the highest confidence area is always 1.0, 
+        # making your threshold parameter much more reliable.
+        probs_min, probs_max = probs.min(), probs.max()
+        if probs_max > probs_min:
+            probs = (probs - probs_min) / (probs_max - probs_min)
 
+        # 2. Binarize using the threshold
+        binary = (probs >= threshold).astype(np.uint8) * 255
+        
+        # Use LANCZOS resampling for smoother upscaling instead of BILINEAR
+        mask_img = Image.fromarray(binary, mode="L").resize(image.size, Image.Resampling.LANCZOS)
+
+        # 3. Dilation: Expands the mask so the inpainting model has context
         if dilation > 0:
             size = max(3, int(dilation))
             if size % 2 == 0:
                 size += 1
             mask_img = mask_img.filter(ImageFilter.MaxFilter(size=size))
 
+        # 4. Blur: Creates the blending gradient (Do NOT re-binarize after this!)
         if blur > 0:
             mask_img = mask_img.filter(ImageFilter.GaussianBlur(radius=blur))
 
-        mask_array = np.array(mask_img)
-        mask_img = Image.fromarray((mask_array >= 127).astype(np.uint8) * 255, mode="L")
         return mask_img
-
-
-def load_prompts_file(filepath):
-    """
-    Load per-image prompts from CSV file.
-    
-    Format: filename,mask_prompt,inpaint_prompt
-    Lines starting with # are ignored.
-    
-    Returns:
-        dict mapping filenames (and basenames) to mask_prompt
-    """
-    prompts_map = {}
-    print(f"Loading per-image prompts from: {filepath}")
-    try:
-        with open(filepath, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if not line or line.startswith('#'):
-                    continue
-                parts = line.split(',')
-                if len(parts) >= 2:
-                    img_name = parts[0].strip()
-                    mask_prompt = parts[1].strip()
-                    # Support both full filename and basename without extension
-                    prompts_map[img_name] = mask_prompt
-                    basename_no_ext = os.path.splitext(img_name)[0]
-                    prompts_map[basename_no_ext] = mask_prompt
-        print(f"  Loaded {len(prompts_map)} custom mask prompts")
-    except Exception as e:
-        print(f"  Warning: Failed to load prompts file: {e}")
-    return prompts_map
 
 
 def generate_masks(
@@ -128,7 +110,7 @@ def generate_masks(
     # Load per-image prompts if provided
     mask_prompts_map = {}
     if prompts_file:
-        mask_prompts_map = load_prompts_file(prompts_file)
+        mask_prompts_map, _ = load_prompts_file(prompts_file)
 
     # Find all images
     input_images = sorted(
