@@ -11,7 +11,6 @@ from diffusers import (
     AutoPipelineForImage2Image,
     AutoPipelineForText2Image,
     DiffusionPipeline,
-    QwenImageEditPipeline  # --- ADDED QWEN ---
 )
 
 from inpaint import resize_with_aspect_ratio_padding, restore_output_to_original, mean_abs_pixel_diff
@@ -66,8 +65,7 @@ class ImageGenerator:
         if self.device == "cpu":
             return torch.float32
 
-        # --- FIX 1: Add firered and qwen to use bfloat16 to prevent black images ---
-        if self.model_key in ["sd3", "sd35", "firered", "qwen"]:
+        if self.model_key in ["sd3", "sd35", "firered"]:
             if self.device == "cuda" and torch.cuda.is_bf16_supported():
                 return torch.bfloat16
             return torch.float16
@@ -90,13 +88,6 @@ class ImageGenerator:
                     torch_dtype=dtype,
                     use_safetensors=True,
                     trust_remote_code=True 
-                )
-            elif self.model_key == "qwen":
-                # --- ADDED QWEN ---
-                self.pipeline_t2i = QwenImageEditPipeline.from_pretrained(
-                    model_id,
-                    quantization_config=q_config,
-                    torch_dtype=dtype,
                 )
             elif self.model_key in ["sd3", "sd35"]:
                 self.pipeline_t2i = AutoPipelineForText2Image.from_pretrained(
@@ -129,23 +120,14 @@ class ImageGenerator:
                     print(f"  Warning: could not move fp8 pipeline to {self.device}, already on device")
             else:
                 try:
-                    self.pipeline_t2i.enable_model_cpu_offload()
-                    print(f"  Enabled CPU offload for {self.model_key}")
-                except Exception:
-                    print("  Warning: cpu offload failed, trying sequential offload...")
-                    try:
-                        self.pipeline_t2i.enable_sequential_cpu_offload()
-                        print(f"  Enabled sequential CPU offload for {self.model_key}")
-                    except Exception as e2:
-                        print(f"  Warning: sequential offload also failed: {e2}")
-                        self.pipeline_t2i.to(self.device)
+                    self.pipeline_t2i.to(self.device)
+                    print(f"  Moved pipeline to {self.device}")
+                except Exception as e:
+                    print(f"  Warning: could not move pipeline to {self.device}: {e}. It may already be on the device or not support .to()")
 
-            # Disable progress bar config based on snippet if it's Qwen
-            if self.model_key == "qwen":
-                self.pipeline_t2i.set_progress_bar_config(disable=None)
 
             # --- FIX 2: Bypass from_pipe for native instruct models ----
-            if self.model_key in ["firered", "qwen"]:
+            if self.model_key in ["firered"]:
                 self.pipeline_i2i = self.pipeline_t2i
                 print(f"  Preserved native pipeline architecture for {self.model_key}")
             else:
@@ -175,14 +157,14 @@ class ImageGenerator:
     def generate(self, prompt, image, strength=0.3, guidance_scale=3.5, steps=30, seed=None):
         if seed is None:
             seed = random.randint(0, 2**32 - 1)
-        generator = torch.Generator("cpu").manual_seed(seed)
+        generator = torch.Generator(self.device).manual_seed(seed)
 
         print(f"Generating with seed: {seed}")
 
         if self.monitor:
             self.monitor.start_timer()
             
-        if self.model_key in ["firered", "qwen"]:
+        if self.model_key in ["firered"]:
             # Instruct models often require more steps to remove noise/artifacts.
             use_steps = steps if steps >= 50 else 50
             if steps < 50: 
@@ -204,12 +186,10 @@ class ImageGenerator:
             
             # 1. Gestione Negative Prompt
             if "negative_prompt" in accepted_params:
-                kwargs["negative_prompt"] = " " if self.model_key == "qwen" else ""
+                kwargs["negative_prompt"] = ""
 
             # 2. Gestione Guidance Scale (Testo)
-            if self.model_key == "qwen" and "true_cfg_scale" in accepted_params:
-                kwargs["true_cfg_scale"] = use_guidance
-            elif "guidance_scale" in accepted_params:
+            if "guidance_scale" in accepted_params:
                 kwargs["guidance_scale"] = use_guidance
 
             # 3. Gestione Fedeltà all'Immagine (Il tuo 'strength')

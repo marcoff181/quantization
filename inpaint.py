@@ -15,55 +15,14 @@ from diffusers import (
 from diffusers.quantizers import PipelineQuantizationConfig
 from resource_monitor import ResourceMonitor
 
+from shared_utils import (
+    MODELS_INPAINT, 
+    flush, 
+    quantization_levels, 
+    load_prompts_file
+)
+
 # --- Configuration & Constants ---
-MODELS = {
-    'sd15': 'runwayml/stable-diffusion-v1-5',
-    'sd3': 'stabilityai/stable-diffusion-3-medium-diffusers',
-    'sd35': 'stabilityai/stable-diffusion-3.5-medium',
-}
-
-
-def get_components(model_key):
-    if model_key == "sdxl":
-        return ["text_encoder", "text_encoder_2", "unet"]
-    elif model_key == "sd15":
-        return ["text_encoder", "unet"]
-    elif model_key == "flux":
-        return ["text_encoder", "text_encoder_2", "transformer"]
-    elif model_key in ["sd3", "sd35"]:
-        return ["text_encoder", "text_encoder_2", "text_encoder_3", "transformer"]
-    else:
-        raise ValueError(f"Unknown model key: {model_key}")
-
-
-def quantization_levels(model_key):
-    return {
-        "fp16": None,
-        "fp8": PipelineQuantizationConfig(
-            quant_backend="bitsandbytes_8bit",
-            quant_kwargs={
-                "load_in_8bit": True,
-            },
-            components_to_quantize=get_components(model_key),
-        ),
-        "fp4": PipelineQuantizationConfig(
-            quant_backend="bitsandbytes_4bit",
-            quant_kwargs={
-                "load_in_4bit": True,
-                "bnb_4bit_use_double_quant": True,
-                "bnb_4bit_quant_type": "nf4",
-                "bnb_4bit_compute_dtype": torch.bfloat16,
-            },
-            components_to_quantize=get_components(model_key),
-        ),
-    }
-
-def flush():
-    gc.collect()
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-    elif torch.backends.mps.is_available():
-        torch.mps.empty_cache()
 
 
 def resize_with_aspect_ratio_padding(image, max_size=512, base_unit=64, pad_color=(128, 128, 128)):
@@ -72,8 +31,8 @@ def resize_with_aspect_ratio_padding(image, max_size=512, base_unit=64, pad_colo
     
     Args:
         image: PIL Image
-        max_size: Maximum size of the longer side (default 512)
-        base_unit: Pad to multiple of this value (default 64, required by diffusion models)
+        max_size: Maximum size of the longer sideMODELS (default 512)
+        base_unit: Pad to multiple of this value (default 64, required by diffusion MODELS_INPAINT)
         pad_color: RGB tuple for padding color (default gray: 128,128,128)
     
     Returns:
@@ -236,38 +195,6 @@ def create_mask(image_input, mask_type="center_circle", mask_size_ratio=0.5):
     return mask
 
 
-def load_prompts_file(filepath):
-    """
-    Load per-image prompts from CSV file.
-    
-    Format: filename,mask_prompt,inpaint_prompt
-    Lines starting with # are ignored.
-    
-    Returns:
-        dict mapping filenames (and basenames) to inpaint_prompt
-    """
-    prompts_map = {}
-    print(f"Loading per-image inpainting prompts from: {filepath}")
-    try:
-        with open(filepath, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if not line or line.startswith('#'):
-                    continue
-                parts = line.split(',')
-                if len(parts) >= 3:
-                    img_name = parts[0].strip()
-                    inpaint_prompt = parts[2].strip()
-                    # Support both full filename and basename without extension
-                    prompts_map[img_name] = inpaint_prompt
-                    basename_no_ext = os.path.splitext(img_name)[0]
-                    prompts_map[basename_no_ext] = inpaint_prompt
-        print(f"  Loaded {len(prompts_map)} custom inpainting prompts")
-    except Exception as e:
-        print(f"  Warning: Failed to load prompts file: {e}")
-    return prompts_map
-
-
 class InpaintGenerator:
     def __init__(self, model_key, quantization, device=None, monitor=None):
         self.model_key = model_key
@@ -316,7 +243,7 @@ class InpaintGenerator:
     def load_pipeline(self):
         print(f"Loading {self.model_key} with {self.quantization} quantization (Inpainting)...")
         
-        model_id = MODELS[self.model_key]
+        model_id = MODELS_INPAINT[self.model_key]
         q_config = quantization_levels(self.model_key)[self.quantization]
         dtype = self._get_dtype()
         
@@ -381,17 +308,11 @@ class InpaintGenerator:
                     print(f"  Warning: could not move fp8 pipeline to {self.device}, already on device")
             else:
                 try:
-                    self.pipeline_inpaint.enable_model_cpu_offload()
-                    print(f"  Enabled CPU offload for {self.model_key}")
-                except Exception:
-                    print("  Warning: cpu offload failed, trying sequential offload...")
-                    try:
-                        self.pipeline_inpaint.enable_sequential_cpu_offload()
-                        print(f"  Enabled sequential CPU offload for {self.model_key}")
-                    except Exception as e2:
-                        print(f"  Warning: sequential offload also failed: {e2}")
-                        self.pipeline_inpaint.to(self.device)
-            
+                    self.pipeline_inpaint.to(self.device)
+                    print(f"  Moved pipeline to {self.device}")
+                except Exception as e:
+                    print(f"  Warning: could not move pipeline to {self.device}: {e}. It may already be on the device or not support .to()")
+
         except Exception as e:
             print(f"Error loading pipeline: {e}")
             raise e
@@ -445,9 +366,9 @@ class InpaintGenerator:
         return result
 
 def main():
-    parser = argparse.ArgumentParser(description="Inpaint images using various Stable Diffusion models.")
+    parser = argparse.ArgumentParser(description="Inpaint images using various Stable Diffusion MODELS_INPAINT.")
     parser.add_argument("--prompts_file", type=str, required=True, help="CSV file with per-image prompts (format: filename,mask_prompt,inpaint_prompt).")
-    parser.add_argument("--models", nargs='+', default=['sd3'], choices=MODELS.keys(), help="Models to use.")
+    parser.add_argument("--MODELS_INPAINT", nargs='+', default=['sd3'], choices=MODELS_INPAINT.keys(), help="MODELS_INPAINT to use.")
     parser.add_argument("--quantization", nargs='+', default=['fp16'], choices=quantization_levels("sd35").keys(), help="Quantization levels.")
     parser.add_argument("--input_dir", type=str, required=True, help="Directory containing input images.")
     parser.add_argument("--output_dir", type=str, default="out/inpaint", help="Directory for output images.")
@@ -511,9 +432,9 @@ def main():
         print(f"Processing max {args.max_images} images.")
 
     # Load per-image prompts from CSV
-    custom_prompts_map = load_prompts_file(args.prompts_file)
+    _, inpaint_prompts_map = load_prompts_file(args.prompts_file)
 
-    for model_key in args.models:
+    for model_key in args.MODELS_INPAINT:
         for quant in args.quantization:
             seed = args.seed
             try:
@@ -547,10 +468,10 @@ def main():
                         
                         # Determine inpainting prompt for this image
                         full_name = os.path.basename(img_path)
-                        if full_name in custom_prompts_map:
-                            current_prompt = custom_prompts_map[full_name]
-                        elif base_name in custom_prompts_map:
-                            current_prompt = custom_prompts_map[base_name]
+                        if full_name in inpaint_prompts_map:
+                            current_prompt = inpaint_prompts_map[full_name]
+                        elif base_name in inpaint_prompts_map:
+                            current_prompt = inpaint_prompts_map[base_name]
                         else:
                             print(f"    Warning: image '{base_name}' not found in CSV. Skipping...")
                             continue
@@ -600,9 +521,7 @@ def main():
                         
                         # Restore to original geometry after model generation
                         if resize_info is not None:
-
-                            output_img, restore_mode = restore_output_to_original(output_img, resize_info)
-                            
+                            output_img, restore_mode = restore_output_to_original(output_img, resize_info)    
                             print(f"    Restored output geometry ({restore_mode}): {output_img.size}")
                         
                         seed += 1
