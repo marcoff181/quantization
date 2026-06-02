@@ -30,6 +30,7 @@ from shared_utils import (
 SHARDED_SUPPORTED_MODELS = {"flux", "sd3", "sd35", "pg25"}
 # Quantized bitsandbytes modules are routed away from auto-sharded mode by default.
 SHARDED_UNSUPPORTED_QUANT = {"fp8", "fp4"}
+MAX_OOM_RETRIES = 3
 
 
 class ImageGenerator:
@@ -212,6 +213,24 @@ class ImageGenerator:
             print(f"Text-to-Image not supported for this model configuration: {e}")
             return None
 
+    def cleanup(self):
+        # Best-effort release of GPU memory before moving to the next model.
+        try:
+            if self.pipeline_i2i is not None:
+                try:
+                    self.pipeline_i2i.to("cpu")
+                except Exception:
+                    pass
+            if self.pipeline_t2i is not None:
+                try:
+                    self.pipeline_t2i.to("cpu")
+                except Exception:
+                    pass
+        finally:
+            self.pipeline_i2i = None
+            self.pipeline_t2i = None
+            flush()
+
 
 def build_parser():
     # Keep all CLI wiring in one place to simplify future option changes.
@@ -335,6 +354,7 @@ def generate_for_config(args, monitor, parsed_max_memory, model_key, run_cfg, pr
     
     generator = None
     # 1. RETRY LOOP FOR MODEL LOADING (OOM can happen here when VRAM is stolen)
+    load_attempts = 0
     while True:
         try:
             generator = ImageGenerator(
@@ -348,7 +368,14 @@ def generate_for_config(args, monitor, parsed_max_memory, model_key, run_cfg, pr
             break  # Exit loop if successfully loaded
         except Exception as e:
             if is_oom_error(e):
-                print(f"[{model_key} - {quant}] GPU OOM during model load! Waiting 60 seconds...")
+                load_attempts += 1
+                if load_attempts >= MAX_OOM_RETRIES:
+                    raise RuntimeError(
+                        f"[{model_key} - {quant}] GPU OOM during model load after {load_attempts} attempts"
+                    ) from e
+                print(
+                    f"[{model_key} - {quant}] GPU OOM during model load! Waiting 60 seconds..."
+                )
                 flush()
                 time.sleep(60)  # Sleep idly and retry
             else:
@@ -366,15 +393,18 @@ def generate_for_config(args, monitor, parsed_max_memory, model_key, run_cfg, pr
     # 2. RETRY LOOP FOR IMAGE GENERATION
 
     i = 0
+    prompt_attempts = 0
     while i < len(prompts):
         prompt = prompts[i]
-        out_name = f"{args.output_dir}/{model_key}_{quant}_p{i}_seed{seed}.png"
+        # out_name = f"{args.output_dir}/{model_key}_{quant}_p{i}_seed{seed}.png"
+        out_name = os.path.join(args.output_dir, f"{model_key}_{quant}_p{i}_seed{seed}_s{effective_steps}_g{effective_guidance}.png")
 
         # Skip generation if output file already exists
         if os.path.exists(out_name):
             print(f"[{i + 1}/{len(prompts)}] File {out_name} already exists, skipping...")
             i += 1
             seed += 1
+            prompt_attempts = 0
             continue
 
         try:
@@ -394,10 +424,23 @@ def generate_for_config(args, monitor, parsed_max_memory, model_key, run_cfg, pr
             # Move on to the next prompt upon success or a normal error
             i += 1
             seed += 1
+            prompt_attempts = 0
 
         except Exception as e:
             if is_oom_error(e):
-                print(f"[{model_key} - {quant}] GPU OOM during generation! Waiting 60 seconds...")
+                prompt_attempts += 1
+                if prompt_attempts >= MAX_OOM_RETRIES:
+                    print(
+                        f"[{model_key} - {quant}] GPU OOM during generation after {prompt_attempts} attempts; skipping prompt {i}"
+                    )
+                    flush()
+                    i += 1
+                    seed += 1
+                    prompt_attempts = 0
+                    continue
+                print(
+                    f"[{model_key} - {quant}] GPU OOM during generation! Waiting 60 seconds..."
+                )
                 flush()
                 time.sleep(60)
                 # Notice we DO NOT increment 'i' or 'seed' here, so the while loop tries the EXACT same image again.
@@ -406,7 +449,10 @@ def generate_for_config(args, monitor, parsed_max_memory, model_key, run_cfg, pr
                 # Move past it if it's completely broken so the whole batch doesn't stall forever
                 i += 1
                 seed += 1
+                prompt_attempts = 0
 
+    if generator is not None:
+        generator.cleanup()
     del generator
     flush()
 
