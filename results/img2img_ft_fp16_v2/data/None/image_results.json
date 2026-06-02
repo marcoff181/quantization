@@ -1,0 +1,1502 @@
+[
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00536.jpg",
+    "score": -10.840420722961426,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00536_sd15_fp16_seed123_s30_g3.5_str0.3.png",
+    "score": 6.857968807220459,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00536_sd35_fp16_seed123_s30_g3.5_str0.3.png",
+    "score": 5.001042366027832,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00536_sd3_fp16_seed123_s30_g3.5_str0.3.png",
+    "score": 3.2440097332000732,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00503.jpg",
+    "score": -6.023951530456543,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00503_sd15_fp16_seed124_s30_g3.5_str0.3.png",
+    "score": 7.69936990737915,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00503_sd35_fp16_seed124_s30_g3.5_str0.3.png",
+    "score": 3.973064661026001,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00503_sd3_fp16_seed124_s30_g3.5_str0.3.png",
+    "score": 4.7685322761535645,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00737.jpg",
+    "score": -6.844327926635742,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00737_sd15_fp16_seed125_s30_g3.5_str0.3.png",
+    "score": 9.331625938415527,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00737_sd35_fp16_seed125_s30_g3.5_str0.3.png",
+    "score": 8.235671043395996,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00737_sd3_fp16_seed125_s30_g3.5_str0.3.png",
+    "score": 7.980114459991455,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00559.jpg",
+    "score": -5.0725178718566895,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00559_sd15_fp16_seed126_s30_g3.5_str0.3.png",
+    "score": 7.138643741607666,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00559_sd35_fp16_seed126_s30_g3.5_str0.3.png",
+    "score": 9.697038650512695,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00559_sd3_fp16_seed126_s30_g3.5_str0.3.png",
+    "score": 8.638161659240723,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00544.jpg",
+    "score": -8.945265769958496,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00544_sd15_fp16_seed127_s30_g3.5_str0.3.png",
+    "score": 8.0520601272583,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00544_sd35_fp16_seed127_s30_g3.5_str0.3.png",
+    "score": 6.036292552947998,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00544_sd3_fp16_seed127_s30_g3.5_str0.3.png",
+    "score": 6.651835918426514,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00356.jpg",
+    "score": -7.047426700592041,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00356_sd15_fp16_seed128_s30_g3.5_str0.3.png",
+    "score": 7.346067905426025,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00356_sd35_fp16_seed128_s30_g3.5_str0.3.png",
+    "score": 6.864536762237549,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00356_sd3_fp16_seed128_s30_g3.5_str0.3.png",
+    "score": 5.5675435066223145,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00206.jpg",
+    "score": -0.3148115575313568,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00206_sd15_fp16_seed129_s30_g3.5_str0.3.png",
+    "score": 4.412186145782471,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00206_sd35_fp16_seed129_s30_g3.5_str0.3.png",
+    "score": 6.483945846557617,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00206_sd3_fp16_seed129_s30_g3.5_str0.3.png",
+    "score": 6.871183395385742,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00888.jpg",
+    "score": -8.024787902832031,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00888_sd15_fp16_seed130_s30_g3.5_str0.3.png",
+    "score": 6.890998840332031,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00888_sd35_fp16_seed130_s30_g3.5_str0.3.png",
+    "score": 5.168004035949707,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00888_sd3_fp16_seed130_s30_g3.5_str0.3.png",
+    "score": 5.977404594421387,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00611.jpg",
+    "score": -7.881425380706787,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00611_sd15_fp16_seed131_s30_g3.5_str0.3.png",
+    "score": 7.165227890014648,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00611_sd35_fp16_seed131_s30_g3.5_str0.3.png",
+    "score": 7.728552341461182,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00611_sd3_fp16_seed131_s30_g3.5_str0.3.png",
+    "score": 7.397259712219238,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00711.jpg",
+    "score": -5.826449394226074,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00711_sd15_fp16_seed132_s30_g3.5_str0.3.png",
+    "score": 6.280771255493164,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00711_sd35_fp16_seed132_s30_g3.5_str0.3.png",
+    "score": 4.953846454620361,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00711_sd3_fp16_seed132_s30_g3.5_str0.3.png",
+    "score": 4.1779913902282715,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00531.jpg",
+    "score": -6.1064772605896,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00531_sd15_fp16_seed133_s30_g3.5_str0.3.png",
+    "score": 7.577558994293213,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00531_sd35_fp16_seed133_s30_g3.5_str0.3.png",
+    "score": 8.423290252685547,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00531_sd3_fp16_seed133_s30_g3.5_str0.3.png",
+    "score": 8.530407905578613,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00259.jpg",
+    "score": -7.062936782836914,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00259_sd15_fp16_seed134_s30_g3.5_str0.3.png",
+    "score": 7.5888237953186035,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00259_sd35_fp16_seed134_s30_g3.5_str0.3.png",
+    "score": 5.515651226043701,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00259_sd3_fp16_seed134_s30_g3.5_str0.3.png",
+    "score": 5.617850303649902,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00153.jpg",
+    "score": -6.187654972076416,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00153_sd15_fp16_seed135_s30_g3.5_str0.3.png",
+    "score": 4.945440769195557,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00153_sd35_fp16_seed135_s30_g3.5_str0.3.png",
+    "score": 8.881220817565918,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00153_sd3_fp16_seed135_s30_g3.5_str0.3.png",
+    "score": 8.519366264343262,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00852.jpg",
+    "score": -8.464054107666016,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00852_sd15_fp16_seed136_s30_g3.5_str0.3.png",
+    "score": 7.736876964569092,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00852_sd35_fp16_seed136_s30_g3.5_str0.3.png",
+    "score": 8.346331596374512,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00852_sd3_fp16_seed136_s30_g3.5_str0.3.png",
+    "score": 8.02131175994873,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00063.jpg",
+    "score": -7.200326442718506,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00063_sd15_fp16_seed137_s30_g3.5_str0.3.png",
+    "score": 7.4969916343688965,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00063_sd35_fp16_seed137_s30_g3.5_str0.3.png",
+    "score": 9.68950366973877,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00063_sd3_fp16_seed137_s30_g3.5_str0.3.png",
+    "score": 8.851943016052246,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00434.jpg",
+    "score": -7.866415977478027,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00434_sd15_fp16_seed138_s30_g3.5_str0.3.png",
+    "score": 9.4998197555542,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00434_sd35_fp16_seed138_s30_g3.5_str0.3.png",
+    "score": 9.292886734008789,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00434_sd3_fp16_seed138_s30_g3.5_str0.3.png",
+    "score": 9.207180976867676,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00339.jpg",
+    "score": 0.9657835960388184,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00339_sd15_fp16_seed139_s30_g3.5_str0.3.png",
+    "score": 4.945440769195557,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00339_sd35_fp16_seed139_s30_g3.5_str0.3.png",
+    "score": 7.158227443695068,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00339_sd3_fp16_seed139_s30_g3.5_str0.3.png",
+    "score": 7.046454906463623,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00513.jpg",
+    "score": 2.296875,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00513_sd15_fp16_seed140_s30_g3.5_str0.3.png",
+    "score": 7.0426926612854,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00513_sd35_fp16_seed140_s30_g3.5_str0.3.png",
+    "score": 5.954396724700928,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00513_sd3_fp16_seed140_s30_g3.5_str0.3.png",
+    "score": 7.347827434539795,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00748.jpg",
+    "score": -3.7038753032684326,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00748_sd15_fp16_seed141_s30_g3.5_str0.3.png",
+    "score": 5.6870903968811035,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00748_sd35_fp16_seed141_s30_g3.5_str0.3.png",
+    "score": 3.269573450088501,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00748_sd3_fp16_seed141_s30_g3.5_str0.3.png",
+    "score": 1.709808111190796,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00487.jpg",
+    "score": -9.027813911437988,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00487_sd15_fp16_seed142_s30_g3.5_str0.3.png",
+    "score": 6.867622375488281,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00487_sd35_fp16_seed142_s30_g3.5_str0.3.png",
+    "score": 2.8853507041931152,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00487_sd3_fp16_seed142_s30_g3.5_str0.3.png",
+    "score": 3.357245445251465,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00524.jpg",
+    "score": -8.151226043701172,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00524_sd15_fp16_seed143_s30_g3.5_str0.3.png",
+    "score": 7.823541164398193,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00524_sd35_fp16_seed143_s30_g3.5_str0.3.png",
+    "score": 5.6602911949157715,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00524_sd3_fp16_seed143_s30_g3.5_str0.3.png",
+    "score": 5.2831196784973145,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00893.jpg",
+    "score": -3.9458210468292236,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00893_sd15_fp16_seed144_s30_g3.5_str0.3.png",
+    "score": 4.830638408660889,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00893_sd35_fp16_seed144_s30_g3.5_str0.3.png",
+    "score": 5.7805705070495605,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00893_sd3_fp16_seed144_s30_g3.5_str0.3.png",
+    "score": 6.439792633056641,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00952.jpg",
+    "score": -6.978793144226074,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00952_sd15_fp16_seed145_s30_g3.5_str0.3.png",
+    "score": 8.710705757141113,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00952_sd35_fp16_seed145_s30_g3.5_str0.3.png",
+    "score": 7.5703206062316895,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00952_sd3_fp16_seed145_s30_g3.5_str0.3.png",
+    "score": 6.789849758148193,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00186.jpg",
+    "score": -8.669604301452637,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00186_sd15_fp16_seed146_s30_g3.5_str0.3.png",
+    "score": 10.791686058044434,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00186_sd35_fp16_seed146_s30_g3.5_str0.3.png",
+    "score": 11.32358455657959,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00186_sd3_fp16_seed146_s30_g3.5_str0.3.png",
+    "score": 10.404633522033691,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00673.jpg",
+    "score": -7.394393444061279,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00673_sd15_fp16_seed147_s30_g3.5_str0.3.png",
+    "score": 7.8182053565979,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00673_sd35_fp16_seed147_s30_g3.5_str0.3.png",
+    "score": 8.427107810974121,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00673_sd3_fp16_seed147_s30_g3.5_str0.3.png",
+    "score": 9.029877662658691,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00343.jpg",
+    "score": -1.1183857917785645,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00343_sd15_fp16_seed148_s30_g3.5_str0.3.png",
+    "score": 8.37205696105957,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00343_sd35_fp16_seed148_s30_g3.5_str0.3.png",
+    "score": 9.00051212310791,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00343_sd3_fp16_seed148_s30_g3.5_str0.3.png",
+    "score": 7.704570293426514,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00377.jpg",
+    "score": -6.6490278244018555,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00377_sd15_fp16_seed149_s30_g3.5_str0.3.png",
+    "score": 9.738459587097168,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00377_sd35_fp16_seed149_s30_g3.5_str0.3.png",
+    "score": 10.636223793029785,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00377_sd3_fp16_seed149_s30_g3.5_str0.3.png",
+    "score": 10.05736255645752,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00903.jpg",
+    "score": -7.638663291931152,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00903_sd15_fp16_seed150_s30_g3.5_str0.3.png",
+    "score": 5.802279472351074,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00903_sd35_fp16_seed150_s30_g3.5_str0.3.png",
+    "score": 5.544978618621826,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00903_sd3_fp16_seed150_s30_g3.5_str0.3.png",
+    "score": 4.4517292976379395,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00368.jpg",
+    "score": -7.3414459228515625,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00368_sd15_fp16_seed151_s30_g3.5_str0.3.png",
+    "score": 8.41141128540039,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00368_sd35_fp16_seed151_s30_g3.5_str0.3.png",
+    "score": 9.937782287597656,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00368_sd3_fp16_seed151_s30_g3.5_str0.3.png",
+    "score": 9.801539421081543,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00568.jpg",
+    "score": -8.98726749420166,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00568_sd15_fp16_seed152_s30_g3.5_str0.3.png",
+    "score": 3.245492935180664,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00568_sd35_fp16_seed152_s30_g3.5_str0.3.png",
+    "score": 5.446081638336182,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00568_sd3_fp16_seed152_s30_g3.5_str0.3.png",
+    "score": 5.5294060707092285,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00275.jpg",
+    "score": -7.431856632232666,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00275_sd15_fp16_seed153_s30_g3.5_str0.3.png",
+    "score": 8.023665428161621,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00275_sd35_fp16_seed153_s30_g3.5_str0.3.png",
+    "score": 7.427102565765381,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00275_sd3_fp16_seed153_s30_g3.5_str0.3.png",
+    "score": 7.756730556488037,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00690.jpg",
+    "score": -8.575222969055176,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00690_sd15_fp16_seed154_s30_g3.5_str0.3.png",
+    "score": 6.210948467254639,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00690_sd35_fp16_seed154_s30_g3.5_str0.3.png",
+    "score": 6.5360188484191895,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00690_sd3_fp16_seed154_s30_g3.5_str0.3.png",
+    "score": 6.301209449768066,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00266.jpg",
+    "score": -9.765868186950684,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00266_sd15_fp16_seed155_s30_g3.5_str0.3.png",
+    "score": 5.560896396636963,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00266_sd35_fp16_seed155_s30_g3.5_str0.3.png",
+    "score": 2.4586851596832275,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00266_sd3_fp16_seed155_s30_g3.5_str0.3.png",
+    "score": 3.3676090240478516,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00782.jpg",
+    "score": -1.0278961658477783,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00782_sd15_fp16_seed156_s30_g3.5_str0.3.png",
+    "score": 8.26138687133789,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00782_sd35_fp16_seed156_s30_g3.5_str0.3.png",
+    "score": 8.576048851013184,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00782_sd3_fp16_seed156_s30_g3.5_str0.3.png",
+    "score": 7.413581371307373,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00937.jpg",
+    "score": -5.577234745025635,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00937_sd15_fp16_seed157_s30_g3.5_str0.3.png",
+    "score": 8.768599510192871,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00937_sd35_fp16_seed157_s30_g3.5_str0.3.png",
+    "score": 9.226981163024902,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00937_sd3_fp16_seed157_s30_g3.5_str0.3.png",
+    "score": 9.943453788757324,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00533.jpg",
+    "score": -8.479517936706543,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00533_sd15_fp16_seed158_s30_g3.5_str0.3.png",
+    "score": 8.775193214416504,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00533_sd35_fp16_seed158_s30_g3.5_str0.3.png",
+    "score": 10.022528648376465,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00533_sd3_fp16_seed158_s30_g3.5_str0.3.png",
+    "score": 8.996109962463379,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00022.jpg",
+    "score": -8.64992904663086,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00022_sd15_fp16_seed159_s30_g3.5_str0.3.png",
+    "score": 7.32137393951416,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00022_sd35_fp16_seed159_s30_g3.5_str0.3.png",
+    "score": 5.539610385894775,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00022_sd3_fp16_seed159_s30_g3.5_str0.3.png",
+    "score": 6.217496395111084,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00542.jpg",
+    "score": -7.455449104309082,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00542_sd15_fp16_seed160_s30_g3.5_str0.3.png",
+    "score": 6.9567694664001465,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00542_sd35_fp16_seed160_s30_g3.5_str0.3.png",
+    "score": 6.685454845428467,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00542_sd3_fp16_seed160_s30_g3.5_str0.3.png",
+    "score": 6.638731479644775,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00097.jpg",
+    "score": -6.514125347137451,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00097_sd15_fp16_seed161_s30_g3.5_str0.3.png",
+    "score": 6.176203727722168,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00097_sd35_fp16_seed161_s30_g3.5_str0.3.png",
+    "score": 8.150559425354004,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00097_sd3_fp16_seed161_s30_g3.5_str0.3.png",
+    "score": 8.679789543151855,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00295.jpg",
+    "score": 5.344184875488281,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00295_sd15_fp16_seed162_s30_g3.5_str0.3.png",
+    "score": 4.945440769195557,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00295_sd35_fp16_seed162_s30_g3.5_str0.3.png",
+    "score": 10.452921867370605,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00295_sd3_fp16_seed162_s30_g3.5_str0.3.png",
+    "score": 8.792065620422363,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00460.jpg",
+    "score": -8.830642700195312,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00460_sd15_fp16_seed163_s30_g3.5_str0.3.png",
+    "score": 6.208337783813477,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00460_sd35_fp16_seed163_s30_g3.5_str0.3.png",
+    "score": 1.6837451457977295,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00460_sd3_fp16_seed163_s30_g3.5_str0.3.png",
+    "score": 5.33186674118042,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00197.jpg",
+    "score": -7.1265387535095215,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00197_sd15_fp16_seed164_s30_g3.5_str0.3.png",
+    "score": 8.140629768371582,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00197_sd35_fp16_seed164_s30_g3.5_str0.3.png",
+    "score": 7.131745338439941,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00197_sd3_fp16_seed164_s30_g3.5_str0.3.png",
+    "score": 7.021544933319092,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00707.jpg",
+    "score": -6.781963348388672,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00707_sd15_fp16_seed165_s30_g3.5_str0.3.png",
+    "score": 10.51114273071289,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00707_sd35_fp16_seed165_s30_g3.5_str0.3.png",
+    "score": 9.087861061096191,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00707_sd3_fp16_seed165_s30_g3.5_str0.3.png",
+    "score": 9.897215843200684,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00261.jpg",
+    "score": -8.639435768127441,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00261_sd15_fp16_seed166_s30_g3.5_str0.3.png",
+    "score": 6.558290481567383,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00261_sd35_fp16_seed166_s30_g3.5_str0.3.png",
+    "score": 5.846333980560303,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00261_sd3_fp16_seed166_s30_g3.5_str0.3.png",
+    "score": 8.85619068145752,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00310.jpg",
+    "score": -7.377168655395508,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00310_sd15_fp16_seed167_s30_g3.5_str0.3.png",
+    "score": 7.729032039642334,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00310_sd35_fp16_seed167_s30_g3.5_str0.3.png",
+    "score": 7.450439929962158,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00310_sd3_fp16_seed167_s30_g3.5_str0.3.png",
+    "score": 7.558170795440674,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00979.jpg",
+    "score": -8.435965538024902,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00979_sd15_fp16_seed168_s30_g3.5_str0.3.png",
+    "score": 8.499903678894043,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00979_sd35_fp16_seed168_s30_g3.5_str0.3.png",
+    "score": 6.868875026702881,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00979_sd3_fp16_seed168_s30_g3.5_str0.3.png",
+    "score": 7.1043267250061035,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00160.jpg",
+    "score": -7.615653038024902,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00160_sd15_fp16_seed169_s30_g3.5_str0.3.png",
+    "score": 6.496953010559082,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00160_sd35_fp16_seed169_s30_g3.5_str0.3.png",
+    "score": 6.491922855377197,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00160_sd3_fp16_seed169_s30_g3.5_str0.3.png",
+    "score": 5.879444599151611,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00402.jpg",
+    "score": -4.547541618347168,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00402_sd15_fp16_seed170_s30_g3.5_str0.3.png",
+    "score": 4.945440769195557,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00402_sd35_fp16_seed170_s30_g3.5_str0.3.png",
+    "score": 2.942856550216675,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00402_sd3_fp16_seed170_s30_g3.5_str0.3.png",
+    "score": 3.8158695697784424,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00539.jpg",
+    "score": -9.435718536376953,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00539_sd15_fp16_seed171_s30_g3.5_str0.3.png",
+    "score": 9.62732219696045,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00539_sd35_fp16_seed171_s30_g3.5_str0.3.png",
+    "score": 8.967047691345215,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00539_sd3_fp16_seed171_s30_g3.5_str0.3.png",
+    "score": 8.525627136230469,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00176.jpg",
+    "score": -7.5267133712768555,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00176_sd15_fp16_seed172_s30_g3.5_str0.3.png",
+    "score": 5.4407572746276855,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00176_sd35_fp16_seed172_s30_g3.5_str0.3.png",
+    "score": 1.9974586963653564,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00176_sd3_fp16_seed172_s30_g3.5_str0.3.png",
+    "score": 3.4038302898406982,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00726.jpg",
+    "score": -7.838460445404053,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00726_sd15_fp16_seed173_s30_g3.5_str0.3.png",
+    "score": 6.200097560882568,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00726_sd35_fp16_seed173_s30_g3.5_str0.3.png",
+    "score": 9.893548965454102,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00726_sd3_fp16_seed173_s30_g3.5_str0.3.png",
+    "score": 9.298704147338867,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00793.jpg",
+    "score": -7.916975975036621,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00793_sd15_fp16_seed174_s30_g3.5_str0.3.png",
+    "score": 10.273191452026367,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00793_sd35_fp16_seed174_s30_g3.5_str0.3.png",
+    "score": 8.638567924499512,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00793_sd3_fp16_seed174_s30_g3.5_str0.3.png",
+    "score": 8.687921524047852,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00818.jpg",
+    "score": -8.30477523803711,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00818_sd15_fp16_seed175_s30_g3.5_str0.3.png",
+    "score": 7.857859134674072,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00818_sd35_fp16_seed175_s30_g3.5_str0.3.png",
+    "score": 8.870614051818848,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00818_sd3_fp16_seed175_s30_g3.5_str0.3.png",
+    "score": 8.995332717895508,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00778.jpg",
+    "score": -1.991687536239624,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00778_sd15_fp16_seed176_s30_g3.5_str0.3.png",
+    "score": 9.880464553833008,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00778_sd35_fp16_seed176_s30_g3.5_str0.3.png",
+    "score": 10.775691032409668,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00778_sd3_fp16_seed176_s30_g3.5_str0.3.png",
+    "score": 10.765552520751953,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00756.jpg",
+    "score": -8.7579984664917,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00756_sd15_fp16_seed177_s30_g3.5_str0.3.png",
+    "score": 8.290982246398926,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00756_sd35_fp16_seed177_s30_g3.5_str0.3.png",
+    "score": 7.783566951751709,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00756_sd3_fp16_seed177_s30_g3.5_str0.3.png",
+    "score": 8.448987007141113,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00297.jpg",
+    "score": -7.23544454574585,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00297_sd15_fp16_seed178_s30_g3.5_str0.3.png",
+    "score": 6.948658466339111,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00297_sd35_fp16_seed178_s30_g3.5_str0.3.png",
+    "score": 3.6527068614959717,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00297_sd3_fp16_seed178_s30_g3.5_str0.3.png",
+    "score": -0.02109852433204651,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00091.jpg",
+    "score": -8.886428833007812,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00091_sd15_fp16_seed179_s30_g3.5_str0.3.png",
+    "score": 8.799647331237793,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00091_sd35_fp16_seed179_s30_g3.5_str0.3.png",
+    "score": 9.456581115722656,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00091_sd3_fp16_seed179_s30_g3.5_str0.3.png",
+    "score": 9.592367172241211,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00929.jpg",
+    "score": -6.864997386932373,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00929_sd15_fp16_seed180_s30_g3.5_str0.3.png",
+    "score": 8.263838768005371,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00929_sd35_fp16_seed180_s30_g3.5_str0.3.png",
+    "score": 8.640398979187012,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00929_sd3_fp16_seed180_s30_g3.5_str0.3.png",
+    "score": 8.7522611618042,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00449.jpg",
+    "score": -6.63783073425293,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00449_sd15_fp16_seed181_s30_g3.5_str0.3.png",
+    "score": 9.458568572998047,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00449_sd35_fp16_seed181_s30_g3.5_str0.3.png",
+    "score": 6.41635274887085,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00449_sd3_fp16_seed181_s30_g3.5_str0.3.png",
+    "score": 7.293725967407227,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00645.jpg",
+    "score": -8.047967910766602,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00645_sd15_fp16_seed182_s30_g3.5_str0.3.png",
+    "score": 7.837951183319092,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00645_sd35_fp16_seed182_s30_g3.5_str0.3.png",
+    "score": 8.325722694396973,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00645_sd3_fp16_seed182_s30_g3.5_str0.3.png",
+    "score": 7.928726673126221,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00014.jpg",
+    "score": -3.656519651412964,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00014_sd15_fp16_seed183_s30_g3.5_str0.3.png",
+    "score": 7.2146806716918945,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00014_sd35_fp16_seed183_s30_g3.5_str0.3.png",
+    "score": 7.447603702545166,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00014_sd3_fp16_seed183_s30_g3.5_str0.3.png",
+    "score": 6.451522350311279,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00480.jpg",
+    "score": -5.623810291290283,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00480_sd15_fp16_seed184_s30_g3.5_str0.3.png",
+    "score": 7.289660930633545,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00480_sd35_fp16_seed184_s30_g3.5_str0.3.png",
+    "score": 7.484983921051025,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00480_sd3_fp16_seed184_s30_g3.5_str0.3.png",
+    "score": 7.606347560882568,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00996.jpg",
+    "score": -8.59272289276123,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00996_sd15_fp16_seed185_s30_g3.5_str0.3.png",
+    "score": 7.229401588439941,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00996_sd35_fp16_seed185_s30_g3.5_str0.3.png",
+    "score": 6.8667168617248535,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00996_sd3_fp16_seed185_s30_g3.5_str0.3.png",
+    "score": 7.028421878814697,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00868.jpg",
+    "score": -2.2371275424957275,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00868_sd15_fp16_seed186_s30_g3.5_str0.3.png",
+    "score": 7.569615840911865,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00868_sd35_fp16_seed186_s30_g3.5_str0.3.png",
+    "score": 0.24091264605522156,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00868_sd3_fp16_seed186_s30_g3.5_str0.3.png",
+    "score": -1.7765085697174072,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00431.jpg",
+    "score": -6.259082317352295,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00431_sd15_fp16_seed187_s30_g3.5_str0.3.png",
+    "score": 9.671600341796875,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00431_sd35_fp16_seed187_s30_g3.5_str0.3.png",
+    "score": 7.528769016265869,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00431_sd3_fp16_seed187_s30_g3.5_str0.3.png",
+    "score": 7.955976963043213,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00695.jpg",
+    "score": -6.442719459533691,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00695_sd15_fp16_seed188_s30_g3.5_str0.3.png",
+    "score": 6.383918285369873,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00695_sd35_fp16_seed188_s30_g3.5_str0.3.png",
+    "score": 8.79708480834961,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00695_sd3_fp16_seed188_s30_g3.5_str0.3.png",
+    "score": 8.668508529663086,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00502.jpg",
+    "score": -5.880604267120361,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00502_sd15_fp16_seed189_s30_g3.5_str0.3.png",
+    "score": 8.409123420715332,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00502_sd35_fp16_seed189_s30_g3.5_str0.3.png",
+    "score": 8.08798885345459,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00502_sd3_fp16_seed189_s30_g3.5_str0.3.png",
+    "score": 8.534409523010254,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00260.jpg",
+    "score": -4.420253276824951,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00260_sd15_fp16_seed190_s30_g3.5_str0.3.png",
+    "score": 9.3400297164917,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00260_sd35_fp16_seed190_s30_g3.5_str0.3.png",
+    "score": 9.700224876403809,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00260_sd3_fp16_seed190_s30_g3.5_str0.3.png",
+    "score": 7.894425868988037,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00328.jpg",
+    "score": -8.737960815429688,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00328_sd15_fp16_seed191_s30_g3.5_str0.3.png",
+    "score": 8.331021308898926,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00328_sd35_fp16_seed191_s30_g3.5_str0.3.png",
+    "score": 8.346409797668457,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00328_sd3_fp16_seed191_s30_g3.5_str0.3.png",
+    "score": 6.308450222015381,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00179.jpg",
+    "score": -9.503629684448242,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00179_sd15_fp16_seed192_s30_g3.5_str0.3.png",
+    "score": 7.012535095214844,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00179_sd35_fp16_seed192_s30_g3.5_str0.3.png",
+    "score": 6.392351150512695,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00179_sd3_fp16_seed192_s30_g3.5_str0.3.png",
+    "score": 6.620521545410156,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00564.jpg",
+    "score": -5.151798725128174,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00564_sd15_fp16_seed193_s30_g3.5_str0.3.png",
+    "score": 8.875049591064453,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00564_sd35_fp16_seed193_s30_g3.5_str0.3.png",
+    "score": 6.821040630340576,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00564_sd3_fp16_seed193_s30_g3.5_str0.3.png",
+    "score": 7.081423282623291,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00395.jpg",
+    "score": -8.074922561645508,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00395_sd15_fp16_seed194_s30_g3.5_str0.3.png",
+    "score": 8.13789176940918,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00395_sd35_fp16_seed194_s30_g3.5_str0.3.png",
+    "score": 5.399984836578369,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00395_sd3_fp16_seed194_s30_g3.5_str0.3.png",
+    "score": 6.366226673126221,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00495.jpg",
+    "score": -7.491084098815918,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00495_sd15_fp16_seed195_s30_g3.5_str0.3.png",
+    "score": 5.291740894317627,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00495_sd35_fp16_seed195_s30_g3.5_str0.3.png",
+    "score": 5.563382625579834,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00495_sd3_fp16_seed195_s30_g3.5_str0.3.png",
+    "score": 4.745814323425293,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00035.jpg",
+    "score": -6.558656215667725,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00035_sd15_fp16_seed196_s30_g3.5_str0.3.png",
+    "score": 6.220670223236084,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00035_sd35_fp16_seed196_s30_g3.5_str0.3.png",
+    "score": 7.35373067855835,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00035_sd3_fp16_seed196_s30_g3.5_str0.3.png",
+    "score": 7.912601947784424,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/Real_cropped_1024/00442.jpg",
+    "score": -9.830828666687012,
+    "label": 0.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00442_sd15_fp16_seed197_s30_g3.5_str0.3.png",
+    "score": 6.547950744628906,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00442_sd35_fp16_seed197_s30_g3.5_str0.3.png",
+    "score": 7.737430095672607,
+    "label": 1.0
+  },
+  {
+    "path": "/media/CrispyMcMarkInc/fake-images-img2img/test/00442_sd3_fp16_seed197_s30_g3.5_str0.3.png",
+    "score": 7.243952751159668,
+    "label": 1.0
+  }
+]

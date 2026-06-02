@@ -1,0 +1,4 @@
+model,quantization,steps,guidance,strength,weighted_fake_rate,total_samples
+sd15,fp16,40,6.5,0.45,0.8333333333333334,6.0
+sd3,fp16,30,6.5,0.6,0.5,6.0
+sd35,fp8,30,5.0,0.6,0.6666666666666666,6.0
