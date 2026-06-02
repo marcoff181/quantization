@@ -208,3 +208,10 @@ __marimo__/
 
 out/
 test/
+
+.venvs/
+fake-images/
+fake-images-img2img/
+Real/
+Real_cropped_1024/
+checkpoint/
