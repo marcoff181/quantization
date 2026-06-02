@@ -1,0 +1,4 @@
+[submodule "Image-Deepfake-Detectors-Public-Library"]
+	path = Image-Deepfake-Detectors-Public-Library
+	url = https://github.com/...
+	ignore = all
