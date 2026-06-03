@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+ #!/usr/bin/env python3
 """Professional comparison of CLIP-D methods using fake + real CSVs.
 
 Usage example:

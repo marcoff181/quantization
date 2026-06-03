@@ -3,7 +3,6 @@
 Run all CLIP-D detection modes on real images in parallel, aggregate into one CSV.
 """
 from pathlib import Path
-import run_detection_img2img as runner
 from multiprocessing import Pool
 import csv
 import os
