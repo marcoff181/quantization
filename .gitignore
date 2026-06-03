@@ -215,3 +215,9 @@ fake-images-img2img/
 Real/
 Real_cropped_1024/
 checkpoint/
+
+# Restructured data paths
+data/fake/
+data/real/
+checkpoint/
+checkpoints/
